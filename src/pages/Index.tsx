@@ -10,14 +10,16 @@ import { BAStudioTab } from "@/components/analytics/BAStudioTab";
 import { InsightsTab } from "@/components/analytics/InsightsTab";
 import { mockDatasets, Dataset } from "@/lib/analytics-data";
 import { AnimatePresence } from "framer-motion";
+import { NoDatasetSelected } from "@/components/analytics/NoDatasetSelected";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("import");
   const [datasets, setDatasets] = useState<Dataset[]>(mockDatasets);
+  const [selectedDataset, setSelectedDataset] = useState<Dataset | null>(null);
 
   const handleUpload = (file: File) => {
     const newDataset: Dataset = {
-      id: String(datasets.length + 1),
+      id: String(Date.now()),
       name: file.name.replace(/\.(csv|xlsx?)/i, ""),
       rows: Math.floor(Math.random() * 10000) + 1000,
       columns: Math.floor(Math.random() * 20) + 5,
@@ -26,28 +28,58 @@ const Index = () => {
       status: "ready",
     };
     setDatasets([newDataset, ...datasets]);
+    setSelectedDataset(newDataset);
   };
 
+  const handleSelectDataset = (dataset: Dataset) => {
+    setSelectedDataset(dataset);
+  };
+
+  const requiresDataset = ["profile", "analyze", "visualize", "model", "reports", "insights"].includes(activeTab);
+
   const renderTab = () => {
+    // Check if dataset is required but not selected
+    if (requiresDataset && !selectedDataset) {
+      return (
+        <NoDatasetSelected 
+          onGoToImport={() => setActiveTab("import")} 
+        />
+      );
+    }
+
     switch (activeTab) {
       case "import":
-        return <ImportTab datasets={datasets} onUpload={handleUpload} />;
+        return (
+          <ImportTab 
+            datasets={datasets} 
+            selectedDataset={selectedDataset}
+            onUpload={handleUpload}
+            onSelectDataset={handleSelectDataset}
+          />
+        );
       case "profile":
-        return <ProfileTab />;
+        return <ProfileTab dataset={selectedDataset!} />;
       case "analyze":
-        return <AnalyzeTab />;
+        return <AnalyzeTab dataset={selectedDataset!} />;
       case "visualize":
-        return <VisualizeTab />;
+        return <VisualizeTab dataset={selectedDataset!} />;
       case "model":
-        return <ModelTab />;
+        return <ModelTab dataset={selectedDataset!} />;
       case "reports":
-        return <ReportsTab />;
+        return <ReportsTab dataset={selectedDataset!} />;
       case "ba-studio":
         return <BAStudioTab />;
       case "insights":
-        return <InsightsTab />;
+        return <InsightsTab dataset={selectedDataset!} />;
       default:
-        return <ImportTab datasets={datasets} onUpload={handleUpload} />;
+        return (
+          <ImportTab 
+            datasets={datasets} 
+            selectedDataset={selectedDataset}
+            onUpload={handleUpload}
+            onSelectDataset={handleSelectDataset}
+          />
+        );
     }
   };
 
@@ -57,6 +89,7 @@ const Index = () => {
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
         datasetCount={datasets.length}
+        selectedDataset={selectedDataset}
       />
       
       <main className="container mx-auto px-6 py-8">

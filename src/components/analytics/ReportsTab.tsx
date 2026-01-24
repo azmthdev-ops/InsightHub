@@ -5,9 +5,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { reportTemplates } from "@/lib/analytics-data";
+import { reportTemplates, Dataset } from "@/lib/analytics-data";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+
+interface ReportsTabProps {
+  dataset: Dataset;
+}
 
 const reportSections = [
   { id: "metrics", label: "Key Metrics", checked: true },
@@ -16,9 +20,9 @@ const reportSections = [
   { id: "recommendations", label: "Recommendations", checked: false },
 ];
 
-export function ReportsTab() {
+export function ReportsTab({ dataset }: ReportsTabProps) {
   const [template, setTemplate] = useState("executive");
-  const [title, setTitle] = useState("Q4 2024 Business Performance");
+  const [title, setTitle] = useState(`${dataset.name} - Analysis Report`);
   const [sections, setSections] = useState(reportSections);
 
   const toggleSection = (id: string) => {
@@ -29,6 +33,7 @@ export function ReportsTab() {
 
   return (
     <motion.div
+      key={dataset.id}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -41,7 +46,7 @@ export function ReportsTab() {
             <FileText className="h-5 w-5 text-primary" />
             Report Generator
           </CardTitle>
-          <CardDescription>Create professional reports with charts and insights</CardDescription>
+          <CardDescription>Create professional reports from {dataset.name}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
@@ -118,7 +123,12 @@ export function ReportsTab() {
             <div className="space-y-4">
               <div className="border-b pb-4">
                 <h3 className="text-lg font-bold">{title}</h3>
-                <p className="text-xs text-muted-foreground">Generated on {new Date().toLocaleDateString()}</p>
+                <p className="text-xs text-muted-foreground">
+                  Generated on {new Date().toLocaleDateString()} • Source: {dataset.name}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {dataset.rows.toLocaleString()} rows × {dataset.columns} columns
+                </p>
               </div>
 
               {sections.filter(s => s.checked).map((section, index) => (

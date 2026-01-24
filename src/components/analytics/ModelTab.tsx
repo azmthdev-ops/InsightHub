@@ -2,24 +2,61 @@ import { motion } from "framer-motion";
 import { Brain, Target, Users, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { mockModels, mockSegments } from "@/lib/analytics-data";
+import { Dataset, mockModels, mockSegments } from "@/lib/analytics-data";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
-const forecastData = [
-  { scenario: "Optimistic", value: "$2.8M", percentage: 100 },
-  { scenario: "Expected", value: "$2.5M", percentage: 89 },
-  { scenario: "Conservative", value: "$2.2M", percentage: 78 },
-];
+interface ModelTabProps {
+  dataset: Dataset;
+}
 
-const predictions = [
-  { id: "1", customer: "Customer #4521", churn: 23, action: "Retention offer recommended" },
-  { id: "2", customer: "Customer #7832", churn: 67, action: "High risk - immediate action" },
-  { id: "3", customer: "Customer #2156", churn: 12, action: "Low risk - monitor" },
-];
+export function ModelTab({ dataset }: ModelTabProps) {
+  const { forecastData, predictions } = useMemo(() => {
+    const forecasts: Record<string, Array<{ scenario: string; value: string; percentage: number }>> = {
+      "Sales Q4 2024": [
+        { scenario: "Optimistic", value: "$2.8M", percentage: 100 },
+        { scenario: "Expected", value: "$2.5M", percentage: 89 },
+        { scenario: "Conservative", value: "$2.2M", percentage: 78 },
+      ],
+      "Customer Segments": [
+        { scenario: "High Growth", value: "12,500", percentage: 100 },
+        { scenario: "Expected", value: "10,200", percentage: 82 },
+        { scenario: "Conservative", value: "9,100", percentage: 73 },
+      ],
+      "Inventory Levels": [
+        { scenario: "Optimistic", value: "$2.1M", percentage: 100 },
+        { scenario: "Expected", value: "$1.8M", percentage: 86 },
+        { scenario: "Conservative", value: "$1.5M", percentage: 71 },
+      ],
+    };
 
-export function ModelTab() {
+    const preds: Record<string, Array<{ id: string; customer: string; churn: number; action: string }>> = {
+      "Sales Q4 2024": [
+        { id: "1", customer: "Customer #4521", churn: 23, action: "Retention offer recommended" },
+        { id: "2", customer: "Customer #7832", churn: 67, action: "High risk - immediate action" },
+        { id: "3", customer: "Customer #2156", churn: 12, action: "Low risk - monitor" },
+      ],
+      "Customer Segments": [
+        { id: "1", customer: "Segment: At Risk", churn: 45, action: "Launch win-back campaign" },
+        { id: "2", customer: "Segment: Dormant", churn: 78, action: "Reactivation offers needed" },
+        { id: "3", customer: "Segment: Growing", churn: 15, action: "Upsell opportunities" },
+      ],
+      "Inventory Levels": [
+        { id: "1", customer: "SKU #E-1024", churn: 85, action: "Stockout risk - reorder now" },
+        { id: "2", customer: "SKU #C-5892", churn: 32, action: "Monitor lead times" },
+        { id: "3", customer: "SKU #H-3421", churn: 8, action: "Stock levels healthy" },
+      ],
+    };
+
+    return {
+      forecastData: forecasts[dataset.name] || forecasts["Sales Q4 2024"],
+      predictions: preds[dataset.name] || preds["Sales Q4 2024"],
+    };
+  }, [dataset.name]);
+
   return (
     <motion.div
+      key={dataset.id}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -70,9 +107,9 @@ export function ModelTab() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="h-5 w-5 text-primary" />
-              Revenue Forecast
+              Forecast Analysis
             </CardTitle>
-            <CardDescription>Predicted revenue for next quarter</CardDescription>
+            <CardDescription>Predictions based on {dataset.name}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {forecastData.map((item, index) => (
@@ -118,9 +155,9 @@ export function ModelTab() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
-              Customer Segmentation
+              Segmentation Analysis
             </CardTitle>
-            <CardDescription>K-means clustering identified 5 segments</CardDescription>
+            <CardDescription>K-means clustering on {dataset.name}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {mockSegments.map((segment, index) => (
@@ -147,19 +184,19 @@ export function ModelTab() {
         </Card>
       </div>
 
-      {/* Churn Predictions */}
+      {/* Predictions */}
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle>Churn Risk Predictions</CardTitle>
-          <CardDescription>AI-powered customer retention insights</CardDescription>
+          <CardTitle>Predictive Analysis</CardTitle>
+          <CardDescription>AI-powered predictions for {dataset.name}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Customer</th>
-                  <th>Churn Probability</th>
+                  <th>Item</th>
+                  <th>Risk Score</th>
                   <th>Risk Level</th>
                   <th>Recommended Action</th>
                 </tr>
