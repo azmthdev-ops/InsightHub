@@ -1,20 +1,22 @@
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, AlertTriangle, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { mockKPIs, mockAlerts } from "@/lib/analytics-data";
+import { Dataset, getKPIsForDataset, getAlertsForDataset, getRevenueDataForDataset } from "@/lib/analytics-data";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
-const revenueData = [
-  { month: "Oct", revenue: 1800000, target: 1700000 },
-  { month: "Nov", revenue: 2100000, target: 1900000 },
-  { month: "Dec", revenue: 2850000, target: 2200000 },
-  { month: "Jan", revenue: 2400000, target: 2400000 },
-];
+interface AnalyzeTabProps {
+  dataset: Dataset;
+}
 
-export function AnalyzeTab() {
+export function AnalyzeTab({ dataset }: AnalyzeTabProps) {
+  const kpis = getKPIsForDataset(dataset);
+  const alerts = getAlertsForDataset(dataset);
+  const revenueData = getRevenueDataForDataset(dataset);
+
   return (
     <motion.div
+      key={dataset.id}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -22,7 +24,7 @@ export function AnalyzeTab() {
     >
       {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {mockKPIs.map((kpi, index) => (
+        {kpis.map((kpi, index) => (
           <motion.div
             key={kpi.id}
             initial={{ opacity: 0, y: 20 }}
@@ -66,8 +68,10 @@ export function AnalyzeTab() {
         {/* Revenue Chart */}
         <Card className="shadow-card lg:col-span-2">
           <CardHeader>
-            <CardTitle>Revenue Trend</CardTitle>
-            <CardDescription>Q4 2024 performance vs target</CardDescription>
+            <CardTitle>Trend Analysis</CardTitle>
+            <CardDescription>
+              Performance data from <span className="font-medium text-foreground">{dataset.name}</span>
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
@@ -133,7 +137,7 @@ export function AnalyzeTab() {
             <CardDescription>AI-detected patterns</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {mockAlerts.map((alert, index) => (
+            {alerts.map((alert, index) => (
               <motion.div
                 key={alert.id}
                 initial={{ opacity: 0, x: 20 }}

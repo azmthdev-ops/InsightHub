@@ -1,15 +1,16 @@
 import { motion } from "framer-motion";
 import { Database, Settings } from "lucide-react";
-import { tabs } from "@/lib/analytics-data";
+import { tabs, Dataset } from "@/lib/analytics-data";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   datasetCount: number;
+  selectedDataset: Dataset | null;
 }
 
-export function Header({ activeTab, setActiveTab, datasetCount }: HeaderProps) {
+export function Header({ activeTab, setActiveTab, datasetCount, selectedDataset }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-gradient-hero">
       <div className="container mx-auto px-6 py-4">
@@ -28,8 +29,14 @@ export function Header({ activeTab, setActiveTab, datasetCount }: HeaderProps) {
             </div>
           </div>
 
-          {/* Dataset Counter & Settings */}
+          {/* Dataset Counter & Selected Dataset */}
           <div className="flex items-center gap-4">
+            {selectedDataset && (
+              <div className="flex items-center gap-2 rounded-full bg-primary/20 px-4 py-2 text-sm text-primary-foreground border border-primary/30">
+                <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
+                <span className="font-medium">{selectedDataset.name}</span>
+              </div>
+            )}
             <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-primary-foreground">
               <Database className="h-4 w-4" />
               <span>{datasetCount} Datasets</span>

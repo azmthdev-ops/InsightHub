@@ -1,10 +1,17 @@
 import { motion } from "framer-motion";
 import { FileSpreadsheet, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ColumnProfile, Correlation, mockColumnProfiles, mockCorrelations } from "@/lib/analytics-data";
+import { Dataset, getColumnProfilesForDataset, getCorrelationsForDataset } from "@/lib/analytics-data";
 import { cn } from "@/lib/utils";
 
-export function ProfileTab() {
+interface ProfileTabProps {
+  dataset: Dataset;
+}
+
+export function ProfileTab({ dataset }: ProfileTabProps) {
+  const columnProfiles = getColumnProfilesForDataset(dataset);
+  const correlations = getCorrelationsForDataset(dataset);
+
   const getQualityIndicator = (missing: number) => {
     if (missing === 0) return { icon: CheckCircle, class: "text-success", label: "Good" };
     if (missing < 10) return { icon: AlertTriangle, class: "text-warning", label: "Warning" };
@@ -13,6 +20,7 @@ export function ProfileTab() {
 
   return (
     <motion.div
+      key={dataset.id}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -25,7 +33,9 @@ export function ProfileTab() {
             <FileSpreadsheet className="h-5 w-5 text-primary" />
             Data Quality & Statistics
           </CardTitle>
-          <CardDescription>Statistical summaries and data quality indicators</CardDescription>
+          <CardDescription>
+            Analyzing <span className="font-medium text-foreground">{dataset.name}</span> • {dataset.rows.toLocaleString()} rows × {dataset.columns} columns
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -43,7 +53,7 @@ export function ProfileTab() {
                 </tr>
               </thead>
               <tbody>
-                {mockColumnProfiles.map((col, index) => {
+                {columnProfiles.map((col, index) => {
                   const quality = getQualityIndicator(col.missing);
                   const QualityIcon = quality.icon;
                   
@@ -94,7 +104,7 @@ export function ProfileTab() {
           <CardDescription>Key variable relationships</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {mockCorrelations.map((corr, index) => (
+          {correlations.map((corr, index) => (
             <motion.div
               key={corr.pair}
               initial={{ opacity: 0, x: 20 }}

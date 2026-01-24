@@ -1,16 +1,19 @@
 import { motion } from "framer-motion";
-import { Upload, FileSpreadsheet, Eye, Check, AlertCircle, Loader2 } from "lucide-react";
+import { Upload, FileSpreadsheet, Check, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Dataset } from "@/lib/analytics-data";
 import { cn } from "@/lib/utils";
 import { useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
 
 interface ImportTabProps {
   datasets: Dataset[];
+  selectedDataset: Dataset | null;
   onUpload: (file: File) => void;
+  onSelectDataset: (dataset: Dataset) => void;
 }
 
-export function ImportTab({ datasets, onUpload }: ImportTabProps) {
+export function ImportTab({ datasets, selectedDataset, onUpload, onSelectDataset }: ImportTabProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -127,36 +130,64 @@ export function ImportTab({ datasets, onUpload }: ImportTabProps) {
             Available Datasets
           </CardTitle>
           <CardDescription>
-            {datasets.length} datasets ready for analysis
+            Select a dataset to analyze • {datasets.length} available
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          {datasets.map((dataset, index) => (
-            <motion.div
-              key={dataset.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="group flex items-center justify-between rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:border-primary/30"
-            >
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-medium">{dataset.name}</h4>
-                  {statusIcons[dataset.status]}
+          {datasets.map((dataset, index) => {
+            const isSelected = selectedDataset?.id === dataset.id;
+            
+            return (
+              <motion.div
+                key={dataset.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => onSelectDataset(dataset)}
+                className={cn(
+                  "group flex items-center justify-between rounded-lg border p-4 transition-all cursor-pointer",
+                  isSelected 
+                    ? "border-primary bg-primary/5 ring-2 ring-primary/20" 
+                    : "bg-card hover:shadow-md hover:border-primary/30"
+                )}
+              >
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    {isSelected && (
+                      <CheckCircle2 className="h-4 w-4 text-primary" />
+                    )}
+                    <h4 className={cn(
+                      "font-medium",
+                      isSelected && "text-primary"
+                    )}>{dataset.name}</h4>
+                    {statusIcons[dataset.status]}
+                  </div>
+                  <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                    <span>{dataset.rows.toLocaleString()} rows</span>
+                    <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+                    <span>{dataset.columns} cols</span>
+                    <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+                    <span>{dataset.size}</span>
+                  </div>
                 </div>
-                <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
-                  <span>{dataset.rows.toLocaleString()} rows</span>
-                  <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
-                  <span>{dataset.columns} cols</span>
-                  <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
-                  <span>{dataset.size}</span>
-                </div>
-              </div>
-              <button className="rounded-lg p-2 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-primary/10 hover:text-primary">
-                <Eye className="h-4 w-4" />
-              </button>
-            </motion.div>
-          ))}
+                <Button 
+                  variant={isSelected ? "default" : "outline"} 
+                  size="sm"
+                  className="shrink-0"
+                >
+                  {isSelected ? "Selected" : "Select"}
+                </Button>
+              </motion.div>
+            );
+          })}
+          
+          {datasets.length === 0 && (
+            <div className="py-8 text-center text-muted-foreground">
+              <FileSpreadsheet className="mx-auto h-12 w-12 mb-3 opacity-50" />
+              <p className="text-sm">No datasets available</p>
+              <p className="text-xs mt-1">Upload a file to get started</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </motion.div>
