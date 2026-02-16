@@ -24,7 +24,7 @@ export default function DashboardLayout({
                             <h1 className="text-sm font-bold tracking-tight text-white/50 uppercase">Operational Console</h1>
                         </div>
                     </header>
-                    <div className="flex flex-1 flex-col gap-4 bg-zinc-950">
+                    <div className="flex flex-1 flex-col min-h-0 bg-zinc-950">
                         {children}
                     </div>
                 </SidebarInset>

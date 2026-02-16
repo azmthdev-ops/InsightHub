@@ -1,17 +1,6 @@
-import { streamText } from 'ai';
-import { createOpenAI } from '@ai-sdk/openai';
+import { groq } from "@/lib/groq";
+import { deepseek } from "@/lib/deepseek";
 import { createClient } from '@supabase/supabase-js';
-
-// AI SDK Providers
-const groqProvider = createOpenAI({
-    apiKey: process.env.GROQ_API_KEY!,
-    baseURL: 'https://api.groq.com/openai/v1',
-});
-
-const deepseekProvider = createOpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY!,
-    baseURL: 'https://api.deepseek.com',
-});
 
 // Create Supabase client
 const createSupabaseServer = () => {
@@ -48,22 +37,28 @@ export async function POST(req: Request) {
     const supabase = createSupabaseServer();
 
     try {
-        // 1. Intent Analysis (Keep blocking for now as it's fast)
-        const intentRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: 'llama-3.3-70b-versatile',
-                messages: [{ role: 'user', content: `Classify: "${userMessage}". Reply CHAT or CODE only.` }]
-            })
-        });
+        // 1. Intent Analysis
+        let intent = 'CHAT';
+        try {
+            const intentRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'llama-3.3-70b-versatile',
+                    messages: [{ role: 'user', content: `Classify: "${userMessage}". Reply CHAT or CODE only.` }]
+                })
+            });
+            const intentData = await intentRes.json();
+            intent = intentData.choices?.[0]?.message?.content?.trim().toUpperCase() || 'CHAT';
+        } catch (e) {
+            console.error("Intent analysis failed:", e);
+        }
 
-        const intentData = await intentRes.json();
-        const intent = intentData.choices?.[0]?.message?.content?.trim().toUpperCase() || 'CHAT';
         const wantsCode = intent.includes('CODE') || execute_code;
+        console.log(`Intent: ${intent}, Wants Code: ${wantsCode}`);
 
         // Get dataset schema
         let schemaHint = '';
@@ -76,28 +71,65 @@ export async function POST(req: Request) {
             }
         }
 
-        const model = wantsCode
-            ? deepseekProvider('deepseek-reasoner')
-            : groqProvider('llama-3.3-70b-versatile');
-
         const systemPrompt = wantsCode
             ? `You are a Data Scientist. ${schemaHint}\nUse pandas. Wrap code in \`\`\`python\`\`\`.`
             : `You are an AI Assistant. ${schemaHint}`;
 
         // Build messages with history
         const chatMessages = [
-            ...messageHistory.map((m: { role: string; content: string }) => ({ role: m.role as "user" | "assistant", content: m.content })),
-            { role: "user" as const, content: userMessage }
+            { role: 'system', content: systemPrompt },
+            ...messageHistory.map((m: { role: string; content: string }) => ({ role: m.role, content: m.content })),
+            { role: "user", content: userMessage }
         ];
 
-        const result = await streamText({
-            model: model as any,
-            system: systemPrompt,
-            messages: chatMessages,
+        let stream;
+        if (wantsCode) {
+            stream = await (deepseek as any).chat.completions.create({
+                model: 'deepseek-reasoner',
+                messages: chatMessages,
+                stream: true,
+            });
+        } else {
+            stream = await groq.chat.completions.create({
+                model: 'llama-3.3-70b-versatile',
+                messages: chatMessages,
+                stream: true,
+            } as any);
+        }
+
+        const encoder = new TextEncoder();
+        const readableStream = new ReadableStream({
+            async start(controller) {
+                console.log("Starting direct stream relay...");
+                try {
+                    for await (const chunk of stream) {
+                        const content = chunk.choices[0]?.delta?.content || "";
+                        // Also handle DeepSeek reasoning content if present
+                        const reasoning = (chunk.choices[0]?.delta as any)?.reasoning_content || "";
+
+                        if (reasoning) {
+                            controller.enqueue(encoder.encode(reasoning));
+                        } else if (content) {
+                            controller.enqueue(encoder.encode(content));
+                        }
+                    }
+                } catch (e) {
+                    console.error("Direct stream error:", e);
+                } finally {
+                    controller.close();
+                    console.log("Direct stream relay finished.");
+                }
+            }
         });
 
-        // Return streaming response
-        return result.toTextStreamResponse();
+        return new Response(readableStream, {
+            headers: {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Transfer-Encoding': 'chunked',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+            },
+        });
 
     } catch (error: any) {
         console.error('Chat API Error:', error);

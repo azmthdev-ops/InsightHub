@@ -219,7 +219,7 @@ export function ChatTerminal() {
     }
 
     return (
-        <div className="flex flex-col h-[calc(100vh-4rem)] bg-zinc-950 overflow-hidden">
+        <div className="flex flex-1 flex-col h-full bg-zinc-950 overflow-hidden relative">
             {/* Header / Nav */}
             <header className="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-black/40 backdrop-blur-xl">
                 <div className="flex items-center gap-4">
@@ -266,7 +266,7 @@ export function ChatTerminal() {
             </AnimatePresence>
 
             {/* Chat Area */}
-            <ScrollArea viewportRef={scrollRef} className="flex-1 p-6">
+            <ScrollArea viewportRef={scrollRef} className="flex-1 min-h-0 p-6">
                 <div className="max-w-4xl mx-auto space-y-8">
                     {historyLoading ? (
                         <div className="flex items-center justify-center py-8">
@@ -356,7 +356,7 @@ export function ChatTerminal() {
             </ScrollArea>
 
             {/* Input Container */}
-            <form onSubmit={handleSend} className="p-6 bg-gradient-to-t from-black to-transparent">
+            <form onSubmit={handleSend} className="flex-shrink-0 p-6 bg-gradient-to-t from-black to-transparent">
                 <div className="max-w-4xl mx-auto relative group">
                     <motion.div
                         initial={false}
