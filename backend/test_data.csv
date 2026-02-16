@@ -1,0 +1,16 @@
+name,age,city,salary,department
+John Smith,28,New York,75000,Engineering
+Jane Doe,34,Los Angeles,82000,Marketing
+Bob Johnson,45,Chicago,95000,Sales
+Alice Williams,29,Houston,68000,Engineering
+Charlie Brown,52,Phoenix,,Finance
+Diana Ross,31,Philadelphia,78000,Marketing
+Edward Chen,38,San Antonio,91000,Engineering
+Fiona Garcia,27,San Diego,62000,Sales
+George Kim,41,Dallas,88000,Finance
+Helen Martinez,33,San Jose,79000,Marketing
+Ivan Petrov,36,,76000,Engineering
+Julia Roberts,44,Austin,105000,Sales
+Kevin Lee,30,Jacksonville,71000,Finance
+Laura Wilson,39,Fort Worth,84000,Marketing
+Michael Davis,47,Columbus,92000,Engineering

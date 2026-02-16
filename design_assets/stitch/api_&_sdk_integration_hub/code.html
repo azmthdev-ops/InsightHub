@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Insight-Hub 2.0 | API &amp; SDK Integration Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d6cf2",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                        "zinc-950": "#09090b",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .code-glow {
+            box-shadow: 0 0 20px -5px rgba(13, 108, 242, 0.3);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(13, 108, 242, 0.4);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="border-b border-white/10 bg-background-dark/50 backdrop-blur-md sticky top-0 z-50">
+<div class="max-w-[1600px] mx-auto px-6 h-18 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-icons-round text-white">hub</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight">Insight-Hub <span class="text-primary">2.0</span></h1>
+<p class="text-xs text-slate-400 uppercase tracking-widest font-medium">No-Code ML Factory</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="hidden md:flex items-center bg-white/5 rounded-lg px-3 py-1.5 border border-white/10 mr-4">
+<span class="text-xs text-slate-500 mr-2">Status:</span>
+<span class="flex h-2 w-2 rounded-full bg-emerald-500 mr-2"></span>
+<span class="text-xs font-medium text-emerald-500">API Live</span>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold">
+<span class="material-icons-round text-sm">content_copy</span>
+                    Copy SDK Command
+                </button>
+<button class="w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center hover:bg-white/5">
+<span class="material-icons-round text-slate-400">settings</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-[1600px] mx-auto w-full flex flex-col md:flex-row gap-6 p-6 overflow-hidden">
+<!-- Left Pane: Endpoint Explorer -->
+<aside class="w-full md:w-1/3 flex flex-col gap-6 overflow-y-auto pr-2">
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-bold">Endpoint Explorer</h2>
+<span class="text-xs text-primary font-medium px-2 py-1 bg-primary/10 rounded">32 Active</span>
+</div>
+<!-- Protocol Tabs -->
+<div class="flex p-1 bg-white/5 rounded-xl border border-white/10">
+<button class="flex-1 py-2 text-sm font-medium bg-primary rounded-lg text-white shadow-lg">REST</button>
+<button class="flex-1 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors">GraphQL</button>
+<button class="flex-1 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors">WebSockets</button>
+</div>
+<!-- Search -->
+<div class="relative">
+<span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">search</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg pl-10 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Search endpoints..." type="text"/>
+</div>
+</div>
+<!-- Endpoint Cards -->
+<div class="space-y-3">
+<!-- Card 1 -->
+<div class="glass-card p-4 rounded-xl cursor-pointer border-l-4 border-l-emerald-500 hover:bg-white/5 transition-all group">
+<div class="flex items-start justify-between mb-2">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-500 uppercase">POST</span>
+<span class="material-icons-round text-slate-600 group-hover:text-primary transition-colors text-lg">arrow_forward</span>
+</div>
+<h3 class="text-sm font-semibold mb-1">/v2/predict/inference</h3>
+<p class="text-xs text-slate-400 line-clamp-1">Trigger a live model inference with JSON input payload.</p>
+</div>
+<!-- Card 2 -->
+<div class="glass-card p-4 rounded-xl cursor-pointer border-l-4 border-l-primary hover:bg-white/5 transition-all group border-primary/40">
+<div class="flex items-start justify-between mb-2">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-primary/20 text-primary uppercase">GET</span>
+<span class="material-icons-round text-primary text-lg">check_circle</span>
+</div>
+<h3 class="text-sm font-semibold mb-1">/v2/training/{model_id}</h3>
+<p class="text-xs text-slate-400 line-clamp-1">Fetch the real-time training status and loss metrics.</p>
+</div>
+<!-- Card 3 -->
+<div class="glass-card p-4 rounded-xl cursor-pointer border-l-4 border-l-amber-500 hover:bg-white/5 transition-all group opacity-80">
+<div class="flex items-start justify-between mb-2">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 uppercase">DELETE</span>
+<span class="material-icons-round text-slate-600 group-hover:text-primary transition-colors text-lg">arrow_forward</span>
+</div>
+<h3 class="text-sm font-semibold mb-1">/v2/models/{version}</h3>
+<p class="text-xs text-slate-400 line-clamp-1">Archive or permanently remove a model version.</p>
+</div>
+<!-- WebSocket Card -->
+<div class="glass-card p-4 rounded-xl cursor-pointer border-l-4 border-l-purple-500 hover:bg-white/5 transition-all group">
+<div class="flex items-start justify-between mb-2">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-500 uppercase">STREAM</span>
+<span class="material-icons-round text-slate-600 group-hover:text-primary transition-colors text-lg">arrow_forward</span>
+</div>
+<h3 class="text-sm font-semibold mb-1">ws://api.insight-hub.ai/v2/live</h3>
+<p class="text-xs text-slate-400 line-clamp-1">Subscribe to inference result streams via WebSockets.</p>
+</div>
+</div>
+<!-- Floating API Key Management Card -->
+<div class="mt-auto pt-4">
+<div class="glass-card p-5 rounded-xl border border-primary/20 bg-primary/5 relative overflow-hidden">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-icons-round text-primary">vpn_key</span>
+<h3 class="text-sm font-bold">Project API Key</h3>
+</div>
+<button class="neon-glow bg-primary hover:bg-primary/80 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider transition-all">Rotate Key</button>
+</div>
+<div class="flex items-center gap-3 bg-zinc-950/80 rounded-lg p-3 border border-white/10 group">
+<code class="flex-1 text-xs text-slate-400 blur-[4px] group-hover:blur-0 transition-all duration-300 font-mono tracking-tighter">
+                            ih_live_51MszL10D7f8VbX9k0Zp6Qw...
+                        </code>
+<button class="material-icons-round text-slate-500 hover:text-white transition-colors text-sm">visibility</button>
+<button class="material-icons-round text-slate-500 hover:text-white transition-colors text-sm">content_copy</button>
+</div>
+<p class="text-[10px] text-slate-500 mt-3 text-center italic">Key rotated 4 days ago. Next scheduled: 26 days.</p>
+</div>
+</div>
+</aside>
+<!-- Right Pane: API Documentation Window -->
+<section class="flex-1 flex flex-col gap-6 h-full min-h-0">
+<div class="bg-zinc-950 rounded-xl border border-white/10 flex flex-col h-full shadow-2xl overflow-hidden">
+<!-- Editor Header -->
+<div class="flex items-center justify-between px-4 py-3 bg-white/5 border-b border-white/10">
+<div class="flex items-center gap-4">
+<div class="flex gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-rose-500/50"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-amber-500/50"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-emerald-500/50"></div>
+</div>
+<nav class="flex gap-4 ml-4">
+<button class="text-xs font-semibold text-primary border-b border-primary pb-1">Python</button>
+<button class="text-xs font-semibold text-slate-500 hover:text-white transition-colors pb-1">Node.js</button>
+<button class="text-xs font-semibold text-slate-500 hover:text-white transition-colors pb-1">cURL</button>
+</nav>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] text-slate-500 font-mono">predict_inference.py</span>
+<button class="p-1 hover:bg-white/10 rounded text-slate-400">
+<span class="material-icons-round text-sm">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Code Content -->
+<div class="p-6 font-mono text-sm leading-relaxed overflow-y-auto flex-1">
+<pre class="text-slate-300"><span class="text-purple-400">import</span> requests
+<span class="text-purple-400">import</span> json
+
+<span class="text-slate-500"># Define the endpoint and payload</span>
+url = <span class="text-emerald-400">"https://api.insight-hub.ai/v2/predict/inference"</span>
+headers = {
+    <span class="text-emerald-400">"Authorization"</span>: <span class="text-emerald-400">"Bearer YOUR_API_KEY"</span>,
+    <span class="text-emerald-400">"Content-Type"</span>: <span class="text-emerald-400">"application/json"</span>
+}
+
+data = {
+    <span class="text-emerald-400">"model_id"</span>: <span class="text-amber-400">"ml-factory-v2-res-net"</span>,
+    <span class="text-emerald-400">"input_data"</span>: {
+        <span class="text-emerald-400">"batch_size"</span>: <span class="text-amber-400">1</span>,
+        <span class="text-emerald-400">"features"</span>: [<span class="text-amber-400">0.54, 1.22, 0.98, -0.12</span>]
+    }
+}
+
+<span class="text-purple-400">def</span> <span class="text-primary font-bold">trigger_inference</span>():
+    response = requests.post(url, headers=headers, json=data)
+    
+    <span class="text-purple-400">if</span> response.status_code == <span class="text-amber-400">200</span>:
+        <span class="text-purple-400">print</span>(<span class="text-emerald-400">"Inference successful:"</span>, response.json())
+    <span class="text-purple-400">else</span>:
+        <span class="text-purple-400">print</span>(<span class="text-rose-400">"Error:"</span>, response.status_code)</pre>
+</div>
+</div>
+<!-- Param Details Section -->
+<div class="glass-card rounded-xl p-5 border border-white/10">
+<h3 class="text-sm font-bold mb-4 flex items-center gap-2">
+<span class="material-icons-round text-slate-500 text-sm">list_alt</span>
+                    Request Parameters
+                </h3>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs">
+<thead>
+<tr class="text-slate-500 border-b border-white/5">
+<th class="pb-2 font-medium">Parameter</th>
+<th class="pb-2 font-medium">Type</th>
+<th class="pb-2 font-medium">Required</th>
+<th class="pb-2 font-medium">Description</th>
+</tr>
+</thead>
+<tbody class="text-slate-300">
+<tr class="border-b border-white/5">
+<td class="py-3 font-mono text-primary">model_id</td>
+<td class="py-3">string</td>
+<td class="py-3"><span class="text-emerald-500">Yes</span></td>
+<td class="py-3 text-slate-400">Unique identifier for the target ML model.</td>
+</tr>
+<tr class="border-b border-white/5">
+<td class="py-3 font-mono text-primary">batch_size</td>
+<td class="py-3">integer</td>
+<td class="py-3 text-slate-500">No</td>
+<td class="py-3 text-slate-400">Number of instances to process. Defaults to 1.</td>
+</tr>
+<tr>
+<td class="py-3 font-mono text-primary">features</td>
+<td class="py-3">array</td>
+<td class="py-3"><span class="text-emerald-500">Yes</span></td>
+<td class="py-3 text-slate-400">Flattened list of input tensors for inference.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Status Bar -->
+<footer class="mt-auto border-t border-white/10 bg-zinc-950/50 px-6 py-2 flex items-center justify-between text-[10px] text-slate-500 uppercase tracking-widest font-semibold">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                API VERSION: 2.4.1-STABLE
+            </div>
+<div class="flex items-center gap-2">
+<span class="material-icons-round text-[12px]">speed</span>
+                AVG LATENCY: 24MS
+            </div>
+</div>
+<div class="flex items-center gap-4">
+<a class="hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="hover:text-primary transition-colors" href="#">System Health</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</footer>
+</body></html>

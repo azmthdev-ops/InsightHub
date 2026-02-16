@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Insight-Hub 2.0 | AI Co-Pilot</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c25f4",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#191022",
+                        "zinc-950": "#09090b",
+                        "neon-blue": "#0ea5e9"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"],
+                        "mono": ["Fira Code"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            overflow: hidden;
+        }
+        .glass-sidebar {
+            background: rgba(9, 9, 11, 0.85);
+            backdrop-filter: blur(12px);
+            border-left: 1px solid rgba(140, 37, 244, 0.2);
+        }
+        .ai-bubble {
+            background: rgba(140, 37, 244, 0.05);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+        .user-bubble {
+            background: #27272a; /* Zinc-800 */
+        }
+        .code-block {
+            background: #09090b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .input-glow:focus-within {
+            box-shadow: 0 0 15px rgba(140, 37, 244, 0.3);
+            border-color: rgba(140, 37, 244, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 10px;
+        }
+        .pulse-violet {
+            box-shadow: 0 0 0 0 rgba(140, 37, 244, 0.7);
+            animation: pulse-violet 2s infinite;
+        }
+        @keyframes pulse-violet {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(140, 37, 244, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(140, 37, 244, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(140, 37, 244, 0); }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 flex h-screen">
+<!-- Dashboard Main Area (Blurred Background) -->
+<main class="flex-1 p-8 opacity-40 blur-sm pointer-events-none">
+<div class="grid grid-cols-3 gap-6">
+<div class="h-48 rounded-xl bg-zinc-800/50"></div>
+<div class="h-48 rounded-xl bg-zinc-800/50"></div>
+<div class="h-48 rounded-xl bg-zinc-800/50"></div>
+<div class="col-span-2 h-96 rounded-xl bg-zinc-800/50"></div>
+<div class="h-96 rounded-xl bg-zinc-800/50"></div>
+</div>
+</main>
+<!-- Expanded AI Co-Pilot Sidebar -->
+<aside class="w-[420px] h-full glass-sidebar flex flex-col shadow-2xl relative">
+<!-- Status Header -->
+<header class="p-5 border-b border-primary/20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center">
+<span class="material-icons-round text-white text-lg">auto_awesome</span>
+</div>
+<div>
+<h2 class="font-bold text-lg tracking-tight">Relay UI</h2>
+<p class="text-[10px] text-primary/70 uppercase tracking-widest font-semibold">Intelligence Layer</p>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary pulse-violet"></span>
+<span class="text-[11px] font-medium text-primary">DeepSeek: Reasoning</span>
+</div>
+</header>
+<!-- Chat History -->
+<div class="flex-1 overflow-y-auto p-5 space-y-6 custom-scrollbar">
+<!-- AI Message -->
+<div class="flex flex-col gap-2">
+<div class="ai-bubble p-4 rounded-xl rounded-tl-none max-w-[90%]">
+<p class="text-sm leading-relaxed text-zinc-300">
+                        Analyzing your hyperparameter distribution for <span class="text-neon-blue font-medium">Project-Xerox</span>. I noticed a bottleneck in the gradient descent convergence at epoch 45. Would you like me to generate an optimized training script?
+                    </p>
+</div>
+<span class="text-[10px] text-zinc-500 ml-1">Relay AI • Just now</span>
+</div>
+<!-- User Message -->
+<div class="flex flex-col items-end gap-2">
+<div class="user-bubble p-4 rounded-xl rounded-tr-none max-w-[90%] border border-zinc-700">
+<p class="text-sm leading-relaxed text-zinc-100">
+                        Yes, please. Provide a Python snippet using PyTorch for an adaptive learning rate scheduler based on the current validation loss.
+                    </p>
+</div>
+<span class="text-[10px] text-zinc-500 mr-1">User • 12:45 PM</span>
+</div>
+<!-- AI Message with Code -->
+<div class="flex flex-col gap-2">
+<div class="ai-bubble p-4 rounded-xl rounded-tl-none max-w-full">
+<p class="text-sm leading-relaxed text-zinc-300 mb-4">
+                        Here is the implementation using <code class="text-primary font-mono text-xs px-1 bg-primary/10 rounded">ReduceLROnPlateau</code>. This will dynamically adjust the learning rate when the validation loss plateaus.
+                    </p>
+<!-- Code Snippet -->
+<div class="code-block rounded-lg overflow-hidden flex flex-col">
+<div class="bg-zinc-900 px-4 py-2 border-b border-white/5 flex justify-between items-center">
+<span class="text-[11px] font-mono text-zinc-500">scheduler_config.py</span>
+<button class="flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 transition-colors">
+<span class="material-icons-round text-sm">content_copy</span>
+                                Copy
+                            </button>
+</div>
+<div class="p-4 overflow-x-auto">
+<pre class="font-mono text-xs leading-relaxed"><span class="text-purple-400">import</span> torch.optim <span class="text-purple-400">as</span> optim
+
+<span class="text-gray-500"># Define optimizer</span>
+optimizer = optim.Adam(model.parameters(), lr=<span class="text-amber-400">1e-3</span>)
+
+<span class="text-gray-500"># Define adaptive scheduler</span>
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+    optimizer, 
+    mode=<span class="text-emerald-400">'min'</span>, 
+    factor=<span class="text-amber-400">0.1</span>, 
+    patience=<span class="text-amber-400">5</span>, 
+    verbose=<span class="text-emerald-400">True</span>
+)
+
+<span class="text-gray-500"># In training loop</span>
+scheduler.step(val_loss)</pre>
+</div>
+</div>
+</div>
+<span class="text-[10px] text-zinc-500 ml-1">Relay AI • 12:46 PM</span>
+</div>
+<!-- AI Typing Indicator (Subtle) -->
+<div class="flex items-center gap-2 px-2">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 bg-primary/40 rounded-full"></span>
+<span class="w-1.5 h-1.5 bg-primary/40 rounded-full"></span>
+<span class="w-1.5 h-1.5 bg-primary/40 rounded-full"></span>
+</div>
+<span class="text-[10px] text-zinc-600 font-medium italic">Relay is processing...</span>
+</div>
+</div>
+<!-- Enhanced Input Area -->
+<footer class="p-5 bg-zinc-950/50 border-t border-primary/10">
+<div class="flex flex-col gap-3">
+<div class="relative group">
+<div class="absolute -top-6 right-0 flex items-center gap-1.5 opacity-60">
+<span class="text-[10px] text-neon-blue font-bold uppercase tracking-tighter italic">Groq: Fast-Parsing</span>
+<span class="material-icons-round text-[12px] text-neon-blue">speed</span>
+</div>
+<div class="input-glow bg-zinc-900 border border-zinc-800 rounded-xl transition-all duration-300 group-hover:border-primary/40">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-sm p-4 text-zinc-200 placeholder-zinc-600 resize-none font-display" placeholder="Ask Insight-Hub anything..." rows="3"></textarea>
+<div class="flex items-center justify-between px-3 pb-3">
+<div class="flex gap-1">
+<button class="p-2 rounded-lg hover:bg-white/5 text-zinc-500 hover:text-zinc-200 transition-colors">
+<span class="material-icons-round text-lg">attach_file</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-white/5 text-zinc-500 hover:text-zinc-200 transition-colors">
+<span class="material-icons-round text-lg">image</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-white/5 text-zinc-500 hover:text-zinc-200 transition-colors">
+<span class="material-icons-round text-lg">history</span>
+</button>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-zinc-100 flex items-center gap-1 text-xs font-medium transition-colors">
+<span class="material-icons-round text-sm">refresh</span>
+                                    Regenerate
+                                </button>
+<button class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-transform">
+<span class="material-icons-round">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex justify-center">
+<p class="text-[9px] text-zinc-600 uppercase tracking-widest font-bold">Secure No-Code ML Environment</p>
+</div>
+</div>
+</footer>
+<!-- Decorative Floating Elements -->
+<div class="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-24 bg-primary/20 blur-xl rounded-full"></div>
+</aside>
+<!-- Side Decoration (Mini Map Mockup) -->
+<div class="fixed left-0 top-0 h-full w-16 bg-zinc-950/20 border-r border-white/5 flex flex-col items-center py-6 gap-8 backdrop-blur-sm">
+<div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-icons-round">dashboard</span>
+</div>
+<div class="w-10 h-10 rounded-lg hover:bg-white/5 flex items-center justify-center text-zinc-500">
+<span class="material-icons-round">analytics</span>
+</div>
+<div class="w-10 h-10 rounded-lg hover:bg-white/5 flex items-center justify-center text-zinc-500">
+<span class="material-icons-round">layers</span>
+</div>
+<div class="mt-auto w-10 h-10 rounded-full border border-primary/40 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Profile picture of a system administrator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkXsD3EgpSBh3GaHFH5463nozlOt2zeWBpcBdocqB8kXSuPVuF_Q7TnuBuPcGGAkVWPc-vyZtKFmaKgv72CGi0JktLNgjv3BFDZQmriXEw21hi-bwt-3-6CCsrbNK89vGFAC3iWYeK0lQjaDWagMzHocoZZH3JGScSMMtlRxj5QJI2LjPtC0zw35zX90pTF2kAMr2jgl4wxxue37n0VHWbQUwHh6dHYZ-a283ypZ7559EJgLFqwYroLVtDTnc0lBNUiUJCtO1Cv4E"/>
+</div>
+</div>
+</body></html>

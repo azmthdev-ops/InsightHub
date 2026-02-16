@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Insight-Hub Data Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3780f6",
+                        "accent-violet": "#8b5cf6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#09090b", // Deep Zinc-950/Black feel
+                        "zinc-950": "#09090b",
+                        "zinc-900": "#18181b",
+                        "zinc-800": "#27272a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-sidebar {
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow-hover:hover {
+            box-shadow: 0 0 20px rgba(55, 128, 246, 0.3);
+            border-color: #3780f6;
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .5; transform: scale(1.2); }
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-zinc-100 font-display min-h-screen flex overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 glass-sidebar h-screen flex flex-col shrink-0">
+<div class="p-6 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-icons-outlined text-white text-xl">hub</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-white">Insight-Hub <span class="text-primary">2.0</span></h1>
+</div>
+<nav class="flex-1 px-4 py-6 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-icons-outlined text-xl">dashboard</span>
+<span class="font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary border border-primary/20 transition-all" href="#">
+<span class="material-icons-outlined text-xl">dataset</span>
+<span class="font-medium">Data Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-icons-outlined text-xl">model_training</span>
+<span class="font-medium">Model Factory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-icons-outlined text-xl">rocket_launch</span>
+<span class="font-medium">Inference</span>
+</a>
+<div class="pt-8 pb-2 px-4 uppercase text-[10px] font-bold tracking-widest text-zinc-500">System</div>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-icons-outlined text-xl">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/10">
+<div class="glass-card p-4 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover grayscale" data-alt="User profile avatar showing professional man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWF1n6t2KFzt1JnksOyEgmIky9E0H6my5d7L3jOqnvbGJl3z3P3W2AHGnZigVcqvudCAdFd1E_4pZzfSKAOWgZdMyRMq9i8mZm73XfALJC8oWyJxAZZHT_TTToaBSPUzec5qhu03ZShC7iivomRkrE1NKP25vE1VT_oaupcumkP9s2HhCmxAbbnH6asX0813w9nEUh1aidwbubIBQu1b7ZGPp-_GbAvCJQH_UGvBd82LVXO0JoKew_4OljjoQ9xyQNLnma0ZxzRH0"/>
+<div class="overflow-hidden">
+<p class="text-sm font-semibold text-white truncate">Alex Rivard</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Pro Architect</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-background-dark to-background-dark">
+<!-- Header -->
+<header class="h-20 border-b border-white/5 flex items-center justify-between px-8 backdrop-blur-md sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-zinc-400 text-sm">
+<span>Platform</span>
+<span class="material-icons-outlined text-xs">chevron_right</span>
+<span class="text-white font-medium">Data Center</span>
+</div>
+<div class="h-4 w-[1px] bg-white/10 mx-2"></div>
+<div class="flex items-center gap-2 px-3 py-1 bg-green-500/10 rounded-full border border-green-500/20">
+<div class="w-2 h-2 rounded-full bg-green-500 status-pulse"></div>
+<span class="text-[11px] font-bold text-green-500 uppercase tracking-wider">Active Dataset: Ready</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-zinc-900 bg-zinc-800 flex items-center justify-center text-[10px] font-bold">JD</div>
+<div class="w-8 h-8 rounded-full border-2 border-zinc-900 bg-zinc-800 flex items-center justify-center text-[10px] font-bold">MK</div>
+<div class="w-8 h-8 rounded-full border-2 border-zinc-900 bg-primary/20 text-primary border-primary flex items-center justify-center text-[10px] font-bold">+4</div>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-primary/20">
+<span class="material-icons-outlined text-sm">add</span>
+                    New Project
+                </button>
+</div>
+</header>
+<!-- View Content -->
+<div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+<!-- Quick Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="glass-card p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-icons-outlined text-5xl text-primary">storage</span>
+</div>
+<p class="text-zinc-400 text-xs font-bold uppercase tracking-widest mb-1">Total Storage</p>
+<h3 class="text-3xl font-bold text-white mb-4">1.2 <span class="text-sm font-normal text-zinc-500">TB</span></h3>
+<div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[65%]"></div>
+</div>
+<p class="mt-2 text-[11px] text-zinc-500">65% of allocated capacity used</p>
+</div>
+<div class="glass-card p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-icons-outlined text-5xl text-accent-violet">auto_awesome</span>
+</div>
+<p class="text-zinc-400 text-xs font-bold uppercase tracking-widest mb-1">Models Trained</p>
+<h3 class="text-3xl font-bold text-white mb-4">42 <span class="text-sm font-normal text-zinc-500">Units</span></h3>
+<div class="flex items-center gap-2">
+<span class="text-green-500 text-xs font-bold">+12%</span>
+<span class="text-zinc-500 text-[11px]">from last month</span>
+</div>
+</div>
+<div class="glass-card p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-icons-outlined text-5xl text-white">data_thresholding</span>
+</div>
+<p class="text-zinc-400 text-xs font-bold uppercase tracking-widest mb-1">Data Quality</p>
+<h3 class="text-3xl font-bold text-white mb-4">94.8 <span class="text-sm font-normal text-zinc-500">%</span></h3>
+<div class="flex gap-1">
+<div class="h-1 flex-1 bg-green-500 rounded-full"></div>
+<div class="h-1 flex-1 bg-green-500 rounded-full"></div>
+<div class="h-1 flex-1 bg-green-500 rounded-full"></div>
+<div class="h-1 flex-1 bg-green-500/20 rounded-full"></div>
+</div>
+<p class="mt-2 text-[11px] text-zinc-500">System average across all nodes</p>
+</div>
+</div>
+<!-- Ingestion Zone -->
+<section>
+<h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+<span class="material-icons-outlined text-primary">cloud_upload</span>
+                    Ingest New Source
+                </h2>
+<div class="border-2 border-dashed border-white/10 rounded-xl p-12 flex flex-col items-center justify-center bg-white/[0.02] hover:bg-primary/[0.03] transition-all cursor-pointer neon-glow-hover group">
+<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-icons-outlined text-primary text-3xl">upload_file</span>
+</div>
+<h3 class="text-lg font-medium text-white">Drag &amp; Drop Dataset</h3>
+<p class="text-zinc-500 text-sm mt-1">Supports CSV, Parquet, JSON, and Delta Lake formats</p>
+<div class="mt-6 flex items-center gap-4">
+<button class="bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors border border-white/5">
+                            Browse Files
+                        </button>
+<span class="text-zinc-600 text-xs">or connect to</span>
+<div class="flex gap-2">
+<div class="w-8 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-icons-outlined text-sm">cloud</span>
+</div>
+<div class="w-8 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-icons-outlined text-sm">terminal</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Inventory Table -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold text-white flex items-center gap-2">
+<span class="material-icons-outlined text-accent-violet">inventory_2</span>
+                        Dataset Inventory
+                    </h2>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-icons-outlined absolute left-3 top-2 text-zinc-500 text-sm">search</span>
+<input class="bg-zinc-900 border-white/10 rounded-lg pl-10 pr-4 py-1.5 text-xs text-white focus:ring-primary focus:border-primary w-64" placeholder="Search datasets..." type="text"/>
+</div>
+<button class="bg-zinc-900 border border-white/10 p-2 rounded-lg hover:bg-zinc-800 transition-colors">
+<span class="material-icons-outlined text-sm">filter_list</span>
+</button>
+</div>
+</div>
+<div class="glass-card rounded-xl overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-white/5 text-[10px] uppercase tracking-widest text-zinc-400 border-b border-white/10">
+<th class="px-6 py-4 font-bold">Dataset Name</th>
+<th class="px-6 py-4 font-bold">Health</th>
+<th class="px-6 py-4 font-bold">Type</th>
+<th class="px-6 py-4 font-bold">Rows</th>
+<th class="px-6 py-4 font-bold">Last Modified</th>
+<th class="px-6 py-4 font-bold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Row 1 -->
+<tr class="hover:bg-white/[0.02] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
+<span class="material-icons-outlined text-primary text-sm">table_chart</span>
+</div>
+<div>
+<p class="text-sm font-medium text-white">customer_churn_v2.csv</p>
+<p class="text-[10px] text-zinc-500">S3://production-bucket/churn/</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1 bg-white/10 rounded-full w-16">
+<div class="bg-green-500 h-full w-[98%] rounded-full"></div>
+</div>
+<span class="text-[10px] text-green-500 font-bold">98%</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-zinc-800 border border-white/10 text-[10px] text-zinc-400">CSV</span>
+</td>
+<td class="px-6 py-4 text-sm text-zinc-300">1,204,500</td>
+<td class="px-6 py-4 text-sm text-zinc-500">2 mins ago</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 hover:bg-primary/20 hover:text-primary rounded-lg transition-colors">
+<span class="material-icons-outlined text-lg">psychology</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+<span class="material-icons-outlined text-lg">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/[0.02] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-accent-violet/20 flex items-center justify-center">
+<span class="material-icons-outlined text-accent-violet text-sm">layers</span>
+</div>
+<div>
+<p class="text-sm font-medium text-white">sensor_telemetry_delta</p>
+<p class="text-[10px] text-zinc-500">Azure://iot-stream/telemetry/</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1 bg-white/10 rounded-full w-16">
+<div class="bg-yellow-500 h-full w-[72%] rounded-full"></div>
+</div>
+<span class="text-[10px] text-yellow-500 font-bold">72%</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-zinc-800 border border-white/10 text-[10px] text-zinc-400">PARQUET</span>
+</td>
+<td class="px-6 py-4 text-sm text-zinc-300">45,000,000</td>
+<td class="px-6 py-4 text-sm text-zinc-500">1 hour ago</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 hover:bg-primary/20 hover:text-primary rounded-lg transition-colors">
+<span class="material-icons-outlined text-lg">psychology</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+<span class="material-icons-outlined text-lg">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/[0.02] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-zinc-500/20 flex items-center justify-center">
+<span class="material-icons-outlined text-zinc-500 text-sm">description</span>
+</div>
+<div>
+<p class="text-sm font-medium text-white">validation_logs_final</p>
+<p class="text-[10px] text-zinc-500">Local://uploads/temp/</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1 bg-white/10 rounded-full w-16">
+<div class="bg-zinc-500 h-full w-0 rounded-full"></div>
+</div>
+<span class="text-[10px] text-zinc-500 font-bold">Scanning</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-zinc-800 border border-white/10 text-[10px] text-zinc-400">JSON</span>
+</td>
+<td class="px-6 py-4 text-sm text-zinc-300">--</td>
+<td class="px-6 py-4 text-sm text-zinc-500">Just now</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 animate-spin text-primary">
+<span class="material-icons-outlined text-lg">sync</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+<span class="material-icons-outlined text-lg">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 bg-white/5 border-t border-white/10 flex items-center justify-between">
+<p class="text-[11px] text-zinc-500 uppercase font-bold tracking-widest">Showing 1-3 of 12 Datasets</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-zinc-800 rounded border border-white/10 text-[10px] text-zinc-400 hover:text-white">Previous</button>
+<button class="px-3 py-1 bg-primary text-[10px] text-white rounded">Next</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- System Notifications Overlay -->
+<div class="fixed bottom-6 right-6 w-80 pointer-events-none space-y-3">
+<div class="glass-card p-4 rounded-xl border-l-4 border-primary pointer-events-auto shadow-2xl animate-fade-in translate-y-0 opacity-100">
+<div class="flex gap-3">
+<span class="material-icons-outlined text-primary">auto_fix_high</span>
+<div>
+<p class="text-xs font-bold text-white uppercase tracking-wider">ML Intelligence</p>
+<p class="text-[11px] text-zinc-400 mt-1">Found 12 missing values in <span class="text-white">customer_churn_v2</span>. Suggesting imputation.</p>
+<button class="mt-2 text-[10px] font-bold text-primary uppercase">Run Fixer</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
