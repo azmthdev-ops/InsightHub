@@ -73,7 +73,7 @@ export function DashboardHome() {
     ]
 
     return (
-        <div className="flex flex-col h-[calc(100vh-4rem)] bg-zinc-950 overflow-auto p-8 lg:p-12 space-y-12">
+        <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#e8e8e8] overflow-auto p-8 lg:p-12 space-y-12">
             <SystemHealth />
 
             {/* Header Section */}
@@ -83,18 +83,18 @@ export function DashboardHome() {
                 className="flex flex-col lg:flex-row lg:items-center justify-between gap-6"
             >
                 <div>
-                    <h1 className="text-4xl font-extrabold text-white tracking-tight flex items-center gap-3">
+                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
                         Mission Control
                         <Sparkles className="h-6 w-6 text-blue-500 animate-pulse" />
                     </h1>
-                    <p className="text-zinc-500 mt-2 font-medium">Neural diagnostic and data lifecycle management console.</p>
+                    <p className="text-gray-600 mt-2 font-medium">Neural diagnostic and data lifecycle management console.</p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <Button variant="outline" className="bg-white/5 border-white/5 text-zinc-400 hover:text-white rounded-xl px-6 h-12">
+                    <Button variant="outline" className="bg-white border-gray-200 text-gray-700 hover:text-gray-900 rounded-xl px-6 h-12">
                         <Bell className="h-4 w-4 mr-2" />
                         Incidents
                     </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-6 h-12 font-bold shadow-[0_0_20px_rgba(37,99,235,0.3)]">
+                    <Button className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-6 h-12 font-bold shadow-lg">
                         Generate Report
                     </Button>
                 </div>
@@ -111,16 +111,16 @@ export function DashboardHome() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => window.location.href = action.href}
-                        className="flex items-center gap-4 p-6 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/[0.04] transition-all text-left"
+                        className="flex items-center gap-4 p-6 rounded-2xl bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all text-left"
                     >
-                        <div className={`p-4 rounded-2xl bg-zinc-900 ${action.color}`}>
-                            <action.icon className="h-6 w-6" />
+                        <div className={`p-3 rounded-xl bg-gray-50 ${action.color}`}>
+                            <action.icon className="h-5 w-5" />
                         </div>
                         <div>
-                            <h4 className="text-sm font-bold text-white uppercase tracking-widest">{action.label}</h4>
-                            <p className="text-[11px] text-zinc-500 mt-0.5">{action.desc}</p>
+                            <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">{action.label}</h4>
+                            <p className="text-[10px] text-gray-500 mt-0.5">{action.desc}</p>
                         </div>
-                        <MousePointer2 className="h-4 w-4 ml-auto text-zinc-800" />
+                        <MousePointer2 className="h-4 w-4 ml-auto text-gray-300" />
                     </motion.button>
                 ))}
             </div>
@@ -128,12 +128,12 @@ export function DashboardHome() {
             {/* Main Sections */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 {/* Data Insights Chart */}
-                <Card className="lg:col-span-3 bg-zinc-900/40 border-white/5 backdrop-blur-2xl rounded-[32px] overflow-hidden flex flex-col shadow-2xl">
-                    <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+                <Card className="lg:col-span-3 bg-white border-gray-200 rounded-2xl overflow-hidden flex flex-col shadow-sm">
+                    <CardHeader className="p-6 border-b border-gray-200 bg-gray-50">
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle className="text-xl text-white">Neural Pattern Analysis</CardTitle>
-                                <CardDescription className="text-zinc-500 mt-1">Direct inference from active data stream.</CardDescription>
+                                <CardTitle className="text-lg text-gray-900 font-bold">Neural Pattern Analysis</CardTitle>
+                                <CardDescription className="text-gray-500 text-xs mt-1">Direct inference from active data stream.</CardDescription>
                             </div>
 
                             {numericCols.length > 1 && (
@@ -159,7 +159,7 @@ export function DashboardHome() {
                             )}
                         </div>
                     </CardHeader>
-                    <CardContent className="p-8">
+                    <CardContent className="p-6">
                         <AnalyticsChart data={chartData} loading={loading} yKey={selectedY} />
                     </CardContent>
                 </Card>

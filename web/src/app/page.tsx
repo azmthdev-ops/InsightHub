@@ -7,13 +7,11 @@ import { motion } from "framer-motion"
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-blue-500/30">
+    <div className="flex flex-col min-h-screen bg-[#e8e8e8] text-gray-900">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        {/* Background Blobs */}
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob" />
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-violet-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-4000" />
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-[#e8e8e8]">
+        {/* Subtle pattern */}
+        <div className="absolute inset-0 opacity-30 bg-[radial-gradient(#00000008_1px,transparent_1px)] [background-size:16px_16px]" />
 
         <div className="container px-6 mx-auto relative z-10">
           <div className="max-w-4xl mx-auto text-center">
@@ -26,13 +24,13 @@ export default function Home() {
                 <Zap className="h-4 w-4" />
                 <span>Version 2.0 is now live</span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50">
+                <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 text-gray-900">
                 Enterprise Data Intelligence <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-500">
+                <span className="text-gray-700">
                   Simplified by AI
                 </span>
               </h1>
-              <p className="text-xl text-zinc-400 mb-10 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-xl text-gray-600 mb-10 leading-relaxed max-w-2xl mx-auto">
                 The all-in-one analytics hub for data profiling, machine learning, and automated intelligence. Transform raw data into competitive advantages.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -52,38 +50,38 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 bg-zinc-950/50 relative">
+      <section className="py-24 bg-black relative">
         <div className="container px-6 mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/10 backdrop-blur-sm hover:bg-white/[0.04] transition-all group">
-              <div className="h-12 w-12 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Activity className="h-6 w-6 text-blue-400" />
+            <div className="p-8 rounded-2xl bg-[#0a0a0a] border border-white/5 hover:border-white/10 transition-all group">
+              <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-all">
+                <Activity className="h-6 w-6 text-blue-500" />
               </div>
-              <h3 className="text-xl font-bold mb-4">Deep Data Profiling</h3>
-              <p className="text-zinc-500 leading-relaxed">
+              <h3 className="text-lg font-bold mb-3 text-white">Deep Data Profiling</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">
                 Automated statistical analysis, correlation mapping, and outlier detection with real-time quality scoring.
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/10 backdrop-blur-sm hover:bg-white/[0.04] transition-all group">
-              <div className="h-12 w-12 rounded-2xl bg-violet-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Binary className="h-6 w-6 text-violet-400" />
+            <div className="p-8 rounded-2xl bg-[#0a0a0a] border border-white/5 hover:border-white/10 transition-all group">
+              <div className="h-12 w-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-6 group-hover:bg-green-500/20 transition-all">
+                <Binary className="h-6 w-6 text-green-500" />
               </div>
-              <h3 className="text-xl font-bold mb-4">No-Code ML Studio</h3>
-              <p className="text-zinc-500 leading-relaxed">
+              <h3 className="text-lg font-bold mb-3 text-white">No-Code ML Studio</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">
                 Train 15+ industry-standard algorithms for regression and classification without writing a single line of code.
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/10 backdrop-blur-sm hover:bg-white/[0.04] transition-all group">
-              <div className="h-12 w-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <BarChart3 className="h-6 w-6 text-indigo-400" />
+            <div className="p-8 rounded-2xl bg-[#0a0a0a] border border-white/5 hover:border-white/10 transition-all group">
+              <div className="h-12 w-12 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-6 group-hover:bg-yellow-500/20 transition-all">
+                <BarChart3 className="h-6 w-6 text-yellow-500" />
               </div>
-              <h3 className="text-xl font-bold mb-4">Visual Intel Engine</h3>
-              <p className="text-zinc-500 leading-relaxed">
+              <h3 className="text-lg font-bold mb-3 text-white">Visual Intel Engine</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">
                 Create stunning, interactive visualizations using natural language queries powered by deep learning.
               </p>
             </div>

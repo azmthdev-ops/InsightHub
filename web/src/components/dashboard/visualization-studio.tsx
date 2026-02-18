@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { Play, Activity } from "lucide-react"
+import { Play, Activity, Sparkles, Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import Plot from "@/components/ui/plot"
 
@@ -204,6 +204,47 @@ export function VisualizationStudio() {
                                 <Play className="mr-2 h-4 w-4" />
                             )}
                             Create Plot
+                        </Button>
+                    </CardContent>
+                </Card>
+
+                {/* Smart Suggestions */}
+                <Card className="bg-gradient-to-br from-violet-500/10 to-fuchsia-500/10 backdrop-blur-md border-violet-500/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2 text-base">
+                            <Sparkles className="h-4 w-4 text-violet-400" />
+                            Smart Suggestions
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <Button variant="ghost" className="w-full justify-start text-left h-auto p-2 hover:bg-white/5 group" onClick={() => {
+                            setPlotType('scatter')
+                            setXColumn(columns[0])
+                            setYColumn(columns[1])
+                        }}>
+                            <div className="bg-violet-500/20 p-2 rounded-lg mr-3 group-hover:bg-violet-500/30 transition-colors">
+                                <Activity className="h-4 w-4 text-violet-300" />
+                            </div>
+                            <div>
+                                <div className="text-sm font-medium text-zinc-200">Correlation Analysis</div>
+                                <div className="text-xs text-zinc-500">Scatter plot of numerical columns</div>
+                            </div>
+                            <Plus className="ml-auto h-4 w-4 text-zinc-500 group-hover:text-white" />
+                        </Button>
+
+                        <Button variant="ghost" className="w-full justify-start text-left h-auto p-2 hover:bg-white/5 group" onClick={() => {
+                            setPlotType('bar')
+                            setXColumn(columns.find(c => c.toLowerCase().includes('cat') || c.toLowerCase().includes('name')) || columns[0])
+                            setYColumn(columns.find(c => c.toLowerCase().includes('val') || c.toLowerCase().includes('num')) || columns[1])
+                        }}>
+                            <div className="bg-pink-500/20 p-2 rounded-lg mr-3 group-hover:bg-pink-500/30 transition-colors">
+                                <Activity className="h-4 w-4 text-pink-300" />
+                            </div>
+                            <div>
+                                <div className="text-sm font-medium text-zinc-200">Distribution Overview</div>
+                                <div className="text-xs text-zinc-500">Bar chart of categorical data</div>
+                            </div>
+                            <Plus className="ml-auto h-4 w-4 text-zinc-500 group-hover:text-white" />
                         </Button>
                     </CardContent>
                 </Card>

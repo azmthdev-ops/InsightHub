@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Activity, Database, TrendingUp, AlertCircle, CheckCircle2, Sparkles, Lightbulb } from "lucide-react"
 import Plot from "@/components/ui/plot"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ReportGenerator } from "@/components/dashboard/report-generator"
 
 interface ProfileData {
     shape: { rows: number; columns: number }
@@ -80,9 +81,18 @@ export function DataProfiler() {
 
     return (
         <div className="p-8 space-y-6 max-w-7xl mx-auto">
-            <div>
-                <h1 className="text-2xl font-bold text-white mb-1">Data Profiler</h1>
-                <p className="text-sm text-zinc-500">Comprehensive statistical analysis and data quality assessment</p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-white mb-1">Data Profiler</h1>
+                    <p className="text-sm text-zinc-500">Comprehensive statistical analysis and data quality assessment</p>
+                </div>
+                {profileData && selectedDataset && (
+                    <ReportGenerator
+                        data={profileData}
+                        aiInsights={aiInsights}
+                        datasetName={datasets.find(d => d.id === selectedDataset)?.filename || 'Dataset'}
+                    />
+                )}
             </div>
 
             {/* Dataset Selector */}

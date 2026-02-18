@@ -229,12 +229,37 @@ class VisionService:
     def __init__(self):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.models = {}
+        self._load_models()
+        
+    def _load_models(self):
+        """Load YOLO models on initialization"""
+        try:
+            from ultralytics import YOLO
+            
+            # Load YOLOv8n (the one we have in the repo)
+            model_path = Path("yolov8n.pt")
+            if model_path.exists():
+                print(f"Loading YOLOv8n from {model_path}...")
+                self.models['yolov8'] = YOLO(str(model_path))
+                print("✓ YOLOv8n loaded successfully")
+            else:
+                print(f"⚠️ YOLOv8n model not found at {model_path}, will download...")
+                self.models['yolov8'] = YOLO('yolov8n.pt')  # Auto-download
+                print("✓ YOLOv8n downloaded and loaded")
+                
+            # For other models, we'll use YOLOv8 as fallback
+            # In production, you'd download/load the actual models
+            self.models['yolov11'] = self.models['yolov8']  # Fallback
+            self.models['yolov9'] = self.models['yolov8']   # Fallback
+            self.models['yolov12'] = self.models['yolov8']  # Fallback
+            
+        except Exception as e:
+            print(f"⚠️ Error loading YOLO models: {e}")
+            print("Vision service will use mock detections")
         
     def _get_model(self, model_key: str):
-        if model_key in self.models: return self.models[model_key]
-        # In actual deployment, we would load the models here. 
-        # For this implementation, we will mock the detection based on the model type.
-        return None
+        """Get loaded model or return None for mock detection"""
+        return self.models.get(model_key, None)
 
     async def stream_video(self, video_path: str, model_keys: List[str], confidence: float = 0.5):
         cap = cv2.VideoCapture(video_path)
@@ -256,7 +281,14 @@ class VisionService:
                 
                 for key in model_keys:
                     start = time.time()
-                    detections = self._mock_detect(frame, key, confidence)
+                    
+                    # Use real detection if model is loaded, otherwise mock
+                    model = self._get_model(key)
+                    if model is not None:
+                        detections = self._real_detect(frame, model, confidence)
+                    else:
+                        detections = self._mock_detect(frame, key, confidence)
+                    
                     tracked = engines[key]['tracker'].update(detections)
                     
                     preds = {}
@@ -294,6 +326,32 @@ class VisionService:
                 
         finally:
             cap.release()
+
+    def _real_detect(self, frame, model, confidence):
+        """Perform real YOLO detection"""
+        try:
+            results = model(frame, conf=confidence, verbose=False)
+            detections = []
+            
+            for result in results:
+                boxes = result.boxes
+                for box in boxes:
+                    x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+                    conf = float(box.conf[0].cpu().numpy())
+                    cls_id = int(box.cls[0].cpu().numpy())
+                    cls_name = result.names[cls_id]
+                    
+                    detections.append(Detection(
+                        bbox=[float(x1), float(y1), float(x2), float(y2)],
+                        confidence=conf,
+                        class_id=cls_id,
+                        class_name=cls_name
+                    ))
+            
+            return detections
+        except Exception as e:
+            print(f"Detection error: {e}")
+            return []
 
     def _mock_detect(self, frame, model_key, confidence):
         # Generate some realistic-looking detections for the demo

@@ -13,6 +13,8 @@ import {
     Video,
     Sparkles,
     ChevronRight,
+    BarChart3,
+    Zap,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -40,6 +42,16 @@ const data = {
             url: "/dashboard",
             icon: LayoutDashboard,
             isActive: true,
+        },
+        {
+            title: "Business Analytics",
+            url: "/dashboard/ba",
+            icon: BarChart3,
+        },
+        {
+            title: "Optimization",
+            url: "/dashboard/optimization",
+            icon: Zap,
         },
         {
             title: "Data Profiler",
@@ -88,21 +100,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const pathname = usePathname()
 
     return (
-        <Sidebar collapsible="icon" {...props} className="border-r border-white/5 bg-zinc-950/80 backdrop-blur-2xl transition-all duration-300">
-            <SidebarHeader className="border-b border-white/5 p-4 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-violet-500/5 opacity-50 pointer-events-none" />
+        <Sidebar collapsible="icon" {...props} className="border-r border-gray-200 bg-white transition-all duration-300 shadow-sm">
+            <SidebarHeader className="border-b border-gray-200 p-4 relative overflow-hidden bg-white">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center gap-3 font-bold text-xl text-white relative z-10"
+                    className="flex items-center gap-3 font-bold text-xl text-gray-900 relative z-10"
                 >
                     <div className="relative group">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-violet-600 rounded-lg blur opacity-40 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                        <div className="relative h-9 w-9 rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center shadow-2xl">
-                            <Brain className="h-5.5 w-5.5 text-blue-400 group-hover:text-white transition-colors" />
+                        <div className="h-9 w-9 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                            <Brain className="h-5.5 w-5.5 text-blue-600" />
                         </div>
                     </div>
-                    <span className="tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">
+                    <span className="tracking-tight text-gray-900">
                         DataSynth
                     </span>
                 </motion.div>
@@ -120,8 +130,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     className={`
                                         relative group h-11 w-full transition-all duration-300 rounded-xl overflow-hidden
                                         ${isActive
-                                            ? "bg-white/5 text-white"
-                                            : "text-zinc-400 hover:text-zinc-100 hover:bg-white/5"
+                                            ? "bg-gray-100 text-gray-900"
+                                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                                         }
                                     `}
                                 >
@@ -129,24 +139,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         {isActive && (
                                             <motion.div
                                                 layoutId="active-pill"
-                                                className="absolute left-0 w-1 h-6 bg-gradient-to-b from-blue-500 to-violet-600 rounded-r-full shadow-[0_0_12px_rgba(59,130,246,0.6)]"
+                                                className="absolute left-0 w-1 h-6 bg-blue-500 rounded-r-full"
                                             />
                                         )}
                                         <div className={`
                                             p-1.5 rounded-lg transition-all duration-300
-                                            ${isActive ? "text-blue-400" : "group-hover:text-blue-400"}
+                                            ${isActive ? "text-blue-500" : "group-hover:text-blue-500"}
                                         `}>
                                             <item.icon className="h-5 w-5" />
                                         </div>
                                         <span className="font-medium text-sm flex-1">{item.title}</span>
-                                        {isActive && (
-                                            <motion.div
-                                                initial={{ opacity: 0, x: -5 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                            >
-                                                <ChevronRight className="h-3.5 w-3.5 text-zinc-500" />
-                                            </motion.div>
-                                        )}
                                     </a>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -154,22 +156,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     })}
                 </SidebarMenu>
             </SidebarContent>
-            <SidebarFooter className="p-4 border-t border-white/5 bg-black/20 backdrop-blur-sm">
+            <SidebarFooter className="p-4 border-t border-gray-200 bg-white">
                 <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-zinc-900 to-black border border-white/5 shadow-xl group cursor-pointer"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200 group cursor-pointer"
                 >
-                    <div className="relative">
-                        <div className="absolute -inset-0.5 bg-gradient-to-tr from-blue-500 to-violet-600 rounded-full blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
-                        <div className="relative h-9 w-9 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center overflow-hidden">
-                            <Sparkles className="h-4 w-4 text-blue-400" />
-                        </div>
+                    <div className="h-9 w-9 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                        <Sparkles className="h-4 w-4 text-blue-600" />
                     </div>
                     <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-semibold text-zinc-100 truncate">Enterprise Hub</span>
+                        <span className="text-xs font-semibold text-gray-900 truncate">Enterprise Hub</span>
                         <div className="flex items-center gap-1.5">
-                            <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
-                            <span className="text-[10px] text-zinc-500 font-medium">v3.0.4 Online</span>
+                            <span className="flex h-1.5 w-1.5 rounded-full bg-green-500" />
+                            <span className="text-[10px] text-gray-500 font-medium">v3.0.4 Online</span>
                         </div>
                     </div>
                 </motion.div>

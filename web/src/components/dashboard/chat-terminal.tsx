@@ -82,11 +82,17 @@ export function ChatTerminal() {
     const { toast } = useToast()
     const [status, setStatus] = useState<RelayStatus>('idle')
     const [historyLoading, setHistoryLoading] = useState(true)
+    const [mounted, setMounted] = useState(false)
     const scrollRef = useRef<HTMLDivElement>(null)
 
     const [localInput, setLocalInput] = useState("")
     const [messages, setMessages] = useState<Array<{ id: string; role: 'user' | 'assistant'; content: string }>>([])
     const [isLoading, setIsLoading] = useState(false)
+
+    // Prevent hydration mismatch
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     // Fetch Chat History on mount
     useEffect(() => {
@@ -219,32 +225,34 @@ export function ChatTerminal() {
     }
 
     return (
-        <div className="flex flex-1 flex-col h-full bg-zinc-950 overflow-hidden relative">
+        <div className="flex flex-1 flex-col h-full bg-[#e8e8e8] overflow-hidden relative">
             {/* Header / Nav */}
-            <header className="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-black/40 backdrop-blur-xl">
+            <header className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-white shadow-sm">
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-xl bg-violet-500/10 border border-violet-500/20">
-                        <Wand2 className="h-5 w-5 text-violet-400" />
+                    <div className="p-2 rounded-xl bg-violet-50 border border-violet-200">
+                        <Wand2 className="h-5 w-5 text-violet-600" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-white tracking-tight">AI Co-Pilot</h2>
-                        <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Enterprise Reasoning Layer</p>
+                        <h2 className="text-lg font-bold text-gray-900 tracking-tight">AI Business Consultant</h2>
+                        <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Strategy • Analysis • Problem Solving</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <Select value={activeDatasetId || ""} onValueChange={setActiveDatasetById}>
-                        <SelectTrigger className="w-[220px] bg-zinc-900/50 border-white/5 text-[11px] h-9 rounded-xl">
-                            <SelectValue placeholder="Target Dataset" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-zinc-950 border-white/10">
-                            {datasets.map(ds => (
-                                <SelectItem key={ds.id} value={ds.id} className="text-[11px]">
-                                    {ds.filename}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    {mounted && (
+                        <Select value={activeDatasetId || ""} onValueChange={setActiveDatasetById}>
+                            <SelectTrigger className="w-[220px] bg-white border-gray-200 text-[11px] h-9 rounded-lg">
+                                <SelectValue placeholder="Target Dataset" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white border-gray-200">
+                                {datasets.map(ds => (
+                                    <SelectItem key={ds.id} value={ds.id} className="text-[11px]">
+                                        {ds.filename}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
                     <Button variant="ghost" size="icon" className="text-zinc-500 hover:text-white rounded-xl">
                         <History className="h-5 w-5" />
                     </Button>
@@ -273,9 +281,32 @@ export function ChatTerminal() {
                             <Loader2 className="h-6 w-6 animate-spin text-zinc-500" />
                         </div>
                     ) : messages.length === 0 ? (
-                        <div className="text-center py-12">
-                            <p className="text-zinc-500 text-sm">Start a conversation with the AI Co-Pilot</p>
-                            <p className="text-zinc-600 text-xs mt-2">Ask questions about your data or request code generation</p>
+                        <div className="text-center py-12 space-y-6">
+                            <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-violet-50 border border-blue-200">
+                                <Wand2 className="h-8 w-8 text-blue-600" />
+                            </div>
+                            <div>
+                                <p className="text-gray-700 text-lg font-semibold mb-2">AI Business Consultant Ready</p>
+                                <p className="text-gray-500 text-sm max-w-md mx-auto">
+                                    I can help you with business strategy, data analysis, problem-solving, and actionable insights.
+                                </p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 max-w-2xl mx-auto mt-6">
+                                {[
+                                    "Analyze my business metrics",
+                                    "Create a growth strategy",
+                                    "Identify cost optimization opportunities",
+                                    "Forecast revenue trends"
+                                ].map((suggestion) => (
+                                    <button
+                                        key={suggestion}
+                                        onClick={() => setLocalInput(suggestion)}
+                                        className="p-3 text-left text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-sm transition-all"
+                                    >
+                                        {suggestion}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     ) : (
                         messages.map((message) => (
@@ -286,10 +317,10 @@ export function ChatTerminal() {
                                 className={`flex flex-col gap-3 ${message.role === 'user' ? 'items-end' : ''}`}
                             >
                                 <div className={`
-                                    max-w-[85%] rounded-[24px] px-6 py-4 border transition-all duration-300
+                                    max-w-[85%] rounded-2xl px-6 py-4 border transition-all duration-300
                                     ${message.role === 'assistant'
-                                        ? 'bg-white/[0.03] border-white/5 rounded-tl-none shadow-2xl'
-                                        : 'bg-blue-600 text-white border-blue-500 rounded-tr-none shadow-[0_10px_30px_rgba(37,99,235,0.2)]'}
+                                        ? 'bg-white border-gray-200 rounded-tl-none shadow-sm'
+                                        : 'bg-blue-600 text-white border-blue-600 rounded-tr-none'}
                                 `}>
                                     <div className="prose prose-invert prose-sm max-w-none">
                                         <ReactMarkdown
@@ -356,17 +387,12 @@ export function ChatTerminal() {
             </ScrollArea>
 
             {/* Input Container */}
-            <form onSubmit={handleSend} className="flex-shrink-0 p-6 bg-gradient-to-t from-black to-transparent">
+            <form onSubmit={handleSend} className="flex-shrink-0 p-6 bg-gray-50 border-t border-gray-200">
                 <div className="max-w-4xl mx-auto relative group">
-                    <motion.div
-                        initial={false}
-                        animate={isLoading ? { opacity: 1, scale: 1.01 } : { opacity: 0, scale: 1 }}
-                        className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-violet-600/20 rounded-[32px] blur-xl transition-all duration-500"
-                    />
-                    <Card className={`relative bg-zinc-900/80 backdrop-blur-2xl border-white/5 rounded-[30px] shadow-2xl overflow-hidden focus-within:border-white/10 transition-all ${isLoading ? 'ring-2 ring-blue-500/20' : ''}`}>
+                    <Card className={`relative bg-white border-gray-300 rounded-2xl overflow-hidden focus-within:border-blue-500 transition-all shadow-md ${isLoading ? 'border-blue-500 ring-2 ring-blue-200' : ''}`}>
                         <textarea
-                            className="w-full bg-transparent border-none focus:ring-0 text-sm p-6 text-zinc-100 placeholder-zinc-500 resize-none min-h-[120px] outline-none"
-                            placeholder="Describe your analysis objective..."
+                            className="w-full bg-transparent border-none focus:ring-0 text-sm p-6 text-gray-900 placeholder-gray-400 resize-none min-h-[120px] outline-none"
+                            placeholder="Ask me anything: Business strategy, data analysis, problem-solving, financial planning..."
                             value={localInput}
                             onChange={(e) => setLocalInput(e.target.value)}
                             onKeyDown={(e) => {
@@ -379,13 +405,13 @@ export function ChatTerminal() {
                         />
                         <div className="px-6 pb-4 flex items-center justify-between">
                             <div className="flex items-center gap-1">
-                                <Button variant="ghost" size="icon" type="button" className="hover:bg-white/5 rounded-xl text-zinc-500 hover:text-zinc-200">
+                                <Button variant="ghost" size="icon" type="button" className="hover:bg-gray-100 rounded-xl text-gray-400 hover:text-gray-600">
                                     <Paperclip className="h-4.5 w-4.5" />
                                 </Button>
-                                <Button variant="ghost" size="icon" type="button" className="hover:bg-white/5 rounded-xl text-zinc-500 hover:text-zinc-200">
+                                <Button variant="ghost" size="icon" type="button" className="hover:bg-gray-100 rounded-xl text-gray-400 hover:text-gray-600">
                                     <ImageIcon className="h-4.5 w-4.5" />
                                 </Button>
-                                <Button variant="ghost" size="icon" type="button" className="hover:bg-white/5 rounded-xl text-zinc-500 hover:text-zinc-200">
+                                <Button variant="ghost" size="icon" type="button" className="hover:bg-gray-100 rounded-xl text-gray-400 hover:text-gray-600">
                                     <RefreshCw className="h-4.5 w-4.5" />
                                 </Button>
                             </div>
@@ -393,7 +419,7 @@ export function ChatTerminal() {
                             <Button
                                 type="submit"
                                 disabled={isLoading || !localInput?.trim()}
-                                className="bg-white text-black hover:bg-zinc-200 px-8 rounded-2xl font-bold h-11 shadow-xl active:scale-95 transition-all"
+                                className="bg-blue-600 text-white hover:bg-blue-700 px-8 rounded-2xl font-bold h-11 shadow-lg active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
                                 Transmit
@@ -405,15 +431,15 @@ export function ChatTerminal() {
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-1.5">
                             <span className="w-1 h-1 rounded-full bg-blue-500" />
-                            <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">Groq V3</span>
+                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Groq Llama 3.3</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <span className="w-1 h-1 rounded-full bg-violet-500" />
-                            <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">DeepSeek R1</span>
+                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">DeepSeek R1 Reasoning</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <span className="w-1 h-1 rounded-full bg-green-500" />
-                            <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">FastAPI v2</span>
+                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Business Intelligence</span>
                         </div>
                     </div>
                 </div>

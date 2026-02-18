@@ -41,28 +41,35 @@ export function DataCenter() {
 
         try {
             const { data: { user } } = await supabase.auth.getUser()
-            if (!user) throw new Error("Authentication required for ingestion")
 
-            // 1. Upload to Supabase Storage
-            const fileExt = file.name.split('.').pop()
-            const fileName = `${user.id}/${Date.now()}.${fileExt}`
-            const filePath = `${fileName}`
+            // Optional: Supabase Storage for authenticated users
+            let storagePath = null
 
-            setUploadProgress(20)
-            const { data: storageData, error: storageError } = await supabase.storage
-                .from('datasets')
-                .upload(filePath, file)
+            if (user) {
+                // 1. Upload to Supabase Storage
+                const fileExt = file.name.split('.').pop()
+                const fileName = `${user.id}/${Date.now()}.${fileExt}`
+                const filePath = `${fileName}`
 
-            if (storageError) {
-                if (storageError.message.includes("Bucket not found")) {
-                    throw new Error("Supabase Storage 'datasets' bucket not initialized. Please create it in your Supabase dashboard.")
+                setUploadProgress(20)
+                const { data: storageData, error: storageError } = await supabase.storage
+                    .from('datasets')
+                    .upload(filePath, file)
+
+                if (storageError) {
+                    if (storageError.message.includes("Bucket not found")) {
+                        console.warn("Supabase Storage 'datasets' bucket not found. Skipping cloud backup.")
+                    } else {
+                        console.warn("Supabase Storage upload failed:", storageError)
+                    }
+                } else {
+                    storagePath = storageData.path
                 }
-                throw storageError
             }
 
             setUploadProgress(50)
 
-            // 2. Parse & Register with FastAPI
+            // 2. Parse & Register with FastAPI (Always runs)
             const formData = new FormData()
             formData.append('file', file)
 
@@ -76,20 +83,24 @@ export function DataCenter() {
 
             setUploadProgress(80)
 
-            // 3. Save Metadata to Supabase Table
-            const { error: dbError } = await supabase
-                .from('datasets')
-                .insert({
-                    user_id: user.id,
-                    filename: file.name,
-                    storage_path: storageData.path,
-                    row_count: parseData.shape.rows,
-                    column_count: parseData.shape.columns,
-                    columns: parseData.columns,
-                    schema: parseData.preview[0] // Head preview as initial schema hint
-                })
+            // 3. Save Metadata to Supabase Table (Only if authenticated)
+            if (user) {
+                const { error: dbError } = await supabase
+                    .from('datasets')
+                    .insert({
+                        user_id: user.id,
+                        filename: file.name,
+                        storage_path: storagePath || "", // Fallback if storage failed but we still want to log
+                        row_count: parseData.shape.rows,
+                        column_count: parseData.shape.columns,
+                        columns: parseData.columns,
+                        schema: parseData.preview[0]
+                    })
 
-            if (dbError) throw dbError
+                if (dbError) {
+                    console.warn("Supabase DB insert failed (using local-only mode):", dbError)
+                }
+            }
 
             setUploadProgress(100)
             await refreshDatasets()
@@ -125,9 +136,11 @@ export function DataCenter() {
 
     const handleDelete = async (id: string, name: string) => {
         try {
-            // Remove from Supabase Table
+            // Remove from Supabase Table (Optional)
             const { error: dbError } = await supabase.from('datasets').delete().eq('id', id)
-            if (dbError) throw dbError
+            if (dbError) {
+                console.warn("Supabase delete failed (local-only mode):", dbError)
+            }
 
             // Remove from FastAPI memory
             await fetch(`${API_URL}/data/${id}`, { method: 'DELETE' })

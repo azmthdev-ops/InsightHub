@@ -17,7 +17,7 @@ export const uploadDataset = async (file: File) => {
 };
 
 export const getDatasetStatus = async () => {
-    const response = await fetch(`${API_URL}/data/status`);
+    const response = await fetch(`${API_URL}/data/list`);
     if (!response.ok) {
         throw new Error("Failed to get dataset status");
     }
