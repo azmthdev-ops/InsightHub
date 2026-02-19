@@ -17,14 +17,14 @@ export default function DashboardLayout({
             <SidebarProvider>
                 <AppSidebar />
                 <SidebarInset>
-                    <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 lg:px-6 bg-white border-gray-200 shadow-sm">
+                    <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border px-4 lg:px-6 bg-card shadow-sm">
                         <SidebarTrigger className="-ml-1" />
-                        <Separator orientation="vertical" className="mr-2 h-4 bg-gray-200" />
+                        <Separator orientation="vertical" className="mr-2 h-4" />
                         <div className="flex w-full items-center justify-between">
-                            <h1 className="text-xs font-bold tracking-widest text-gray-500 uppercase">Operational Console</h1>
+                            <h1 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">Operational Console</h1>
                         </div>
                     </header>
-                    <div className="flex flex-1 flex-col min-h-0 bg-[#e8e8e8]">
+                    <div className="flex flex-1 flex-col min-h-0 bg-background">
                         {children}
                     </div>
                 </SidebarInset>

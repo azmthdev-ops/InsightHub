@@ -31,8 +31,14 @@ export function DatasetProvider({ children }: { children: React.ReactNode }) {
     const refreshDatasets = useCallback(async () => {
         setIsLoading(true)
         try {
-            const response = await fetch(`${API_URL}/data/list`)
-            if (!response.ok) throw new Error("Failed to fetch datasets")
+            const response = await fetch(`${API_URL}/data/list`, {
+                signal: AbortSignal.timeout(5000) // 5 second timeout
+            })
+            if (!response.ok) {
+                console.log("Backend not available, using empty dataset list")
+                setDatasets([])
+                return
+            }
             const data = await response.json()
             setDatasets(data)
 
@@ -41,7 +47,9 @@ export function DatasetProvider({ children }: { children: React.ReactNode }) {
                 setActiveDatasetId(data[0].id)
             }
         } catch (error) {
-            console.error("Dataset sync error:", error)
+            // Silently handle - backend might not be running
+            console.log("Dataset fetch skipped - backend not available")
+            setDatasets([])
         } finally {
             setIsLoading(false)
         }
@@ -60,7 +68,8 @@ export function DatasetProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         refreshDatasets()
-    }, [refreshDatasets])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []) // Only run once on mount
 
     const activeDataset = datasets.find(d => d.id === activeDatasetId) || null
 

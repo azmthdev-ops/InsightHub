@@ -225,26 +225,26 @@ export function ChatTerminal() {
     }
 
     return (
-        <div className="flex flex-1 flex-col h-full bg-[#e8e8e8] overflow-hidden relative">
+        <div className="flex flex-1 flex-col h-full bg-background overflow-hidden relative">
             {/* Header / Nav */}
-            <header className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-white shadow-sm">
+            <header className="px-6 py-4 border-b border-border flex items-center justify-between bg-card shadow-sm">
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-xl bg-violet-50 border border-violet-200">
-                        <Wand2 className="h-5 w-5 text-violet-600" />
+                    <div className="p-2 rounded-xl bg-accent border border-border">
+                        <Wand2 className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 tracking-tight">AI Business Consultant</h2>
-                        <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Strategy • Analysis • Problem Solving</p>
+                        <h2 className="text-lg font-bold text-foreground tracking-tight">AI Business Consultant</h2>
+                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Strategy • Analysis • Problem Solving</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     {mounted && (
                         <Select value={activeDatasetId || ""} onValueChange={setActiveDatasetById}>
-                            <SelectTrigger className="w-[220px] bg-white border-gray-200 text-[11px] h-9 rounded-lg">
+                            <SelectTrigger className="w-[220px] bg-card border-border text-[11px] h-9 rounded-lg">
                                 <SelectValue placeholder="Target Dataset" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white border-gray-200">
+                            <SelectContent className="bg-card border-border">
                                 {datasets.map(ds => (
                                     <SelectItem key={ds.id} value={ds.id} className="text-[11px]">
                                         {ds.filename}
@@ -319,8 +319,8 @@ export function ChatTerminal() {
                                 <div className={`
                                     max-w-[85%] rounded-2xl px-6 py-4 border transition-all duration-300
                                     ${message.role === 'assistant'
-                                        ? 'bg-white border-gray-200 rounded-tl-none shadow-sm'
-                                        : 'bg-blue-600 text-white border-blue-600 rounded-tr-none'}
+                                        ? 'bg-card border-border rounded-tl-none shadow-sm'
+                                        : 'btn-primary border-primary rounded-tr-none'}
                                 `}>
                                     <div className="prose prose-invert prose-sm max-w-none">
                                         <ReactMarkdown
@@ -336,7 +336,7 @@ export function ChatTerminal() {
                                                                 <div className="absolute top-3 right-3 opacity-0 group-hover/code:opacity-100 transition-opacity">
                                                                     <Button
                                                                         size="sm"
-                                                                        className="bg-blue-600/80 hover:bg-blue-500 text-[10px] h-7 px-3 rounded-lg font-bold uppercase tracking-wider backdrop-blur-md"
+                                                                        className="btn-primary text-[10px] h-7 px-3 rounded-lg font-bold uppercase tracking-wider"
                                                                         onClick={async () => {
                                                                             try {
                                                                                 const res = await fetch(`${API_URL}/execute`, {
@@ -419,7 +419,7 @@ export function ChatTerminal() {
                             <Button
                                 type="submit"
                                 disabled={isLoading || !localInput?.trim()}
-                                className="bg-blue-600 text-white hover:bg-blue-700 px-8 rounded-2xl font-bold h-11 shadow-lg active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="btn-primary px-8 rounded-2xl font-bold h-11 shadow-lg active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
                                 Transmit
