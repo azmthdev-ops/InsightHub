@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState, useCallback } from "react"
 
 type Theme = "light" | "dark"
 
@@ -27,15 +27,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  const toggleTheme = () => {
-    setTheme(prev => {
-      const newTheme = prev === "light" ? "dark" : "light"
-      localStorage.setItem("insight-hub-theme", newTheme)
+  const toggleTheme = useCallback(() => {
+    const newTheme = theme === "light" ? "dark" : "light"
+    
+    // Batch DOM updates
+    requestAnimationFrame(() => {
       document.documentElement.classList.remove("light", "dark")
       document.documentElement.classList.add(newTheme)
-      return newTheme
     })
-  }
+    
+    // Update state and storage
+    setTheme(newTheme)
+    localStorage.setItem("insight-hub-theme", newTheme)
+  }, [theme])
 
   if (!mounted) {
     return <>{children}</>
