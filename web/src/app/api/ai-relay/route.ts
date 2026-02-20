@@ -106,15 +106,18 @@ Reply in format: INTENT|REASONING (e.g., "STRATEGY|DEEP" or "ANALYSIS|SIMPLE")`
                 const [intentType, reasoningLevel] = response.split('|');
                 intent = intentType;
                 needsDeepReasoning = reasoningLevel === 'DEEP';
+            } else {
+                console.error("Intent analysis failed with status:", intentRes.status);
+                // Continue with default intent
             }
-        } catch (e) {
-            console.error("Intent analysis failed:", e);
-            // Continue with default intent
+        } catch (e: any) {
+            console.error("Intent analysis error:", e.message);
+            // Continue with default intent - don't fail the entire request
         }
 
         console.log(`🎯 Intent: ${intent}, Deep Reasoning: ${needsDeepReasoning}`);
 
-        // Get dataset context if available (optional, won't fail if Supabase unavailable)
+        // Get dataset context if available
         let dataContext = '';
         if (dataset_id) {
             try {
@@ -123,12 +126,20 @@ Reply in format: INTENT|REASONING (e.g., "STRATEGY|DEEP" or "ANALYSIS|SIMPLE")`
                     process.env.NEXT_PUBLIC_SUPABASE_URL!,
                     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
                 );
-                const { data: ds } = await supabase.from('datasets').select('columns, schema').eq('id', dataset_id).single();
-                if (ds) {
+                const { data: ds, error } = await supabase
+                    .from('datasets')
+                    .select('columns, schema')
+                    .eq('id', dataset_id)
+                    .single();
+                
+                if (error) {
+                    console.warn("Dataset context fetch error:", error.message);
+                } else if (ds) {
                     dataContext = `\n\n📊 ACTIVE DATASET CONTEXT:\nColumns: ${JSON.stringify(ds.columns)}\nSchema: ${JSON.stringify(ds.schema)}`;
                 }
-            } catch (e) {
-                console.log("Dataset context not available:", e);
+            } catch (e: any) {
+                console.warn("Dataset context not available:", e.message);
+                // Continue without dataset context - not critical
             }
         }
 

@@ -19,7 +19,9 @@ from components.analytics_hub_tab import create_analytics_hub_tab
 from components.ai_copilot_tab import create_ai_copilot_tab
 
 # ==================== Constants ====================
-DEFAULT_GEMINI_KEY = "AIzaSyDjeu06ADLkF29orzanbxkEzW4x60jL7O8"
+# API keys should be loaded from environment variables
+import os
+DEFAULT_GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 
 # ==================== Custom CSS ====================
 CUSTOM_CSS = """

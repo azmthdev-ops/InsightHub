@@ -1,6 +1,6 @@
-"use strict"
+"use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     Card,
     CardContent,
@@ -15,16 +15,52 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Play, Copy, Terminal, Database, Activity, Box, Save } from "lucide-react"
+import { Play, Copy, Terminal, Database, Activity, Box, Save, Loader2 } from "lucide-react"
+import { useDataset } from "@/providers/dataset-provider"
+import { toast } from "sonner"
+
+interface MLModel {
+    id: string
+    name: string
+    type: string
+    status: string
+    accuracy: string
+}
 
 export function MLStudio() {
     const [training, setTraining] = useState(false)
+    const [models, setModels] = useState<MLModel[]>([])
+    const [availableModels, setAvailableModels] = useState<any>(null)
+    const [loading, setLoading] = useState(true)
+    const { activeDataset, datasets } = useDataset()
 
-    // Mock Data
-    const models = [
-        { id: "m1", name: "Customer Churn v2", type: "XGBoost", status: "Ready", accuracy: "94.2%" },
-        { id: "m2", name: "Price Predictor", type: "Linear Regression", status: "Training", accuracy: "-" },
-    ]
+    // Fetch available ML models from backend
+    useEffect(() => {
+        fetchAvailableModels()
+    }, [])
+
+    const fetchAvailableModels = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/api/ml/models')
+            if (response.ok) {
+                const data = await response.json()
+                setAvailableModels(data)
+            }
+        } catch (error) {
+            console.error('Failed to fetch ML models:', error)
+            toast.error('Failed to load ML models')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col h-full gap-6 p-6">
@@ -33,6 +69,11 @@ export function MLStudio() {
                     <h1 className="text-2xl font-bold text-white mb-1">No-Code ML Studio</h1>
                     <p className="text-sm text-zinc-500">Train, deploy, and manage machine learning models.</p>
                 </div>
+                {availableModels && (
+                    <Badge variant="outline" className="text-xs">
+                        {Object.values(availableModels).flat().length} algorithms available
+                    </Badge>
+                )}
             </div>
 
             <Tabs defaultValue="train" className="space-y-4">
@@ -96,13 +137,33 @@ export function MLStudio() {
                                     <Label className="text-white">Algorithm</Label>
                                     <Select>
                                         <SelectTrigger className="bg-zinc-900 border-white/10 text-white">
-                                            <SelectValue placeholder="Auto-select best" />
+                                            <SelectValue placeholder="Select algorithm" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="auto">AutoML (Best Performance)</SelectItem>
-                                            <SelectItem value="rf">Random Forest</SelectItem>
-                                            <SelectItem value="xgb">XGBoost</SelectItem>
-                                            <SelectItem value="lr">Logistic Regression</SelectItem>
+                                            {availableModels?.regression && (
+                                                <>
+                                                    <SelectItem value="regression-header" disabled>
+                                                        <span className="font-bold">Regression</span>
+                                                    </SelectItem>
+                                                    {availableModels.regression.map((model: string) => (
+                                                        <SelectItem key={model} value={model}>
+                                                            {model.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                                                        </SelectItem>
+                                                    ))}
+                                                </>
+                                            )}
+                                            {availableModels?.classification && (
+                                                <>
+                                                    <SelectItem value="classification-header" disabled>
+                                                        <span className="font-bold">Classification</span>
+                                                    </SelectItem>
+                                                    {availableModels.classification.map((model: string) => (
+                                                        <SelectItem key={model} value={model}>
+                                                            {model.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                                                        </SelectItem>
+                                                    ))}
+                                                </>
+                                            )}
                                         </SelectContent>
                                     </Select>
                                 </div>

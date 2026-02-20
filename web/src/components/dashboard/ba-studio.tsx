@@ -1,55 +1,97 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Activity, ArrowRight, Brain, Database } from "lucide-react"
+import { TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Activity, ArrowRight, Brain, Database, Loader2 } from "lucide-react"
 import { ReportGenerator } from "@/components/dashboard/report-generator"
-// Re-using the same Plot component for consistency
 import Plot from "@/components/ui/plot"
-
 import { useDataset } from "@/providers/dataset-provider"
-
-// Mock Data for initial visualization - To be replaced with real data fetch
-const KPIData = [
-    { title: "Total Revenue", value: "$45,231.89", change: "+20.1%", trend: "up", icon: DollarSign },
-    { title: "Active Users", value: "+2350", change: "+180.1%", trend: "up", icon: Users },
-    { title: "Sales", value: "+12,234", change: "+19.2%", trend: "up", icon: ShoppingCart },
-    { title: "Bounce Rate", value: "2.4%", change: "-4.1%", trend: "down", icon: Activity },
-]
-
-const recentSales = [
-    { name: "Olivia Martin", email: "olivia.martin@email.com", amount: "+$1,999.00" },
-    { name: "Jackson Lee", email: "jackson.lee@email.com", amount: "+$39.00" },
-    { name: "Isabella Nguyen", email: "isabella.nguyen@email.com", amount: "+$299.00" },
-    { name: "William Kim", email: "will@email.com", amount: "+$99.00" },
-    { name: "Sofia Davis", email: "sofia.davis@email.com", amount: "+$39.00" },
-]
+import { toast } from "sonner"
 
 export function BAStudio() {
     const { activeDataset, isLoading } = useDataset()
     const [loading, setLoading] = useState(false)
+    const [datasetStats, setDatasetStats] = useState<any>(null)
+    const [kpiData, setKpiData] = useState<any[]>([])
 
-    // Mock chart data
-    const chartData = [
+    // Fetch real dataset statistics
+    useEffect(() => {
+        if (activeDataset?.id) {
+            fetchDatasetStats(activeDataset.id)
+        }
+    }, [activeDataset])
+
+    const fetchDatasetStats = async (datasetId: string) => {
+        setLoading(true)
+        try {
+            const response = await fetch(`http://localhost:8000/api/data/summary/${datasetId}`)
+            if (response.ok) {
+                const data = await response.json()
+                setDatasetStats(data)
+                
+                // Calculate real KPIs from dataset
+                const calculatedKPIs = [
+                    { 
+                        title: "Total Rows", 
+                        value: data.stats.total_rows.toLocaleString(), 
+                        change: "+0%", 
+                        trend: "up", 
+                        icon: Database 
+                    },
+                    { 
+                        title: "Total Columns", 
+                        value: data.stats.total_columns.toString(), 
+                        change: "+0%", 
+                        trend: "up", 
+                        icon: Activity 
+                    },
+                    { 
+                        title: "Missing Values", 
+                        value: data.stats.missing_values.toLocaleString(), 
+                        change: data.stats.missing_values === 0 ? "Perfect!" : "Needs attention", 
+                        trend: data.stats.missing_values === 0 ? "up" : "down", 
+                        icon: ShoppingCart 
+                    },
+                    { 
+                        title: "Memory Usage", 
+                        value: data.stats.memory_usage, 
+                        change: "Optimized", 
+                        trend: "up", 
+                        icon: DollarSign 
+                    },
+                ]
+                setKpiData(calculatedKPIs)
+            }
+        } catch (error) {
+            console.error('Failed to fetch dataset stats:', error)
+            toast.error('Failed to load dataset statistics')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // Generate chart data from real dataset
+    const chartData = datasetStats?.chart_data ? [
         {
-            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            y: [4000, 3000, 2000, 2780, 1890, 2390],
+            x: datasetStats.chart_data.map((_: any, i: number) => `Row ${i + 1}`),
+            y: datasetStats.chart_data.map((d: any) => d[datasetStats.numeric_columns[0]] || 0),
             type: 'scatter',
             mode: 'lines+markers',
             marker: { color: '#3b82f6' },
-            name: 'Revenue'
-        },
-        {
-            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            y: [2400, 1398, 9800, 3908, 4800, 3800],
-            type: 'bar',
-            marker: { color: '#8b5cf6' },
-            name: 'Sales'
+            name: datasetStats.numeric_columns[0] || 'Data'
         }
-    ]
+    ] : []
+
+    if (loading || isLoading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+            </div>
+        )
+    }
 
     return (
         <div className="p-8 space-y-6 max-w-7xl mx-auto">
@@ -78,9 +120,9 @@ export function BAStudio() {
                 </div>
             </div>
 
-            {activeDataset ? (
+            {activeDataset && kpiData.length > 0 ? (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    {KPIData.map((kpi, index) => (
+                    {kpiData.map((kpi, index) => (
                         <Card key={index} className="bg-white/[0.03] backdrop-blur-md border-white/10 hover:bg-white/[0.05] transition-colors">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium text-zinc-200">

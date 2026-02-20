@@ -18,6 +18,10 @@ STORAGE_DIR = Path("data/uploads")
 STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 MANIFEST_FILE = STORAGE_DIR / "manifest.json"
 
+# File upload limits
+MAX_FILE_SIZE = 500 * 1024 * 1024  # 500MB
+ALLOWED_EXTENSIONS = {'.csv', '.xlsx', '.xls', '.json', '.parquet'}
+
 # Import services
 import sys
 sys.path.append('..')
@@ -125,9 +129,24 @@ class AIAnalyzeRequest(BaseModel):
 # Data Management
 @router.post("/data/upload")
 async def upload_dataset(file: UploadFile = File(...)):
-    """Upload a dataset"""
+    """Upload a dataset with size and type validation"""
     try:
+        # Validate file extension
+        file_ext = Path(file.filename).suffix.lower()
+        if file_ext not in ALLOWED_EXTENSIONS:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Unsupported file format. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
+            )
+        
         content = await file.read()
+        
+        # Validate file size
+        if len(content) > MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=413, 
+                detail=f"File too large. Maximum size: {MAX_FILE_SIZE / (1024*1024):.0f}MB"
+            )
         
         if file.filename.endswith('.csv'):
             df = pd.read_csv(io.BytesIO(content))
